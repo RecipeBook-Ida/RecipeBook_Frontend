@@ -33,6 +33,23 @@
       @apply text-2xl;
       @apply font-normal;
       @apply uppercase;
+      @apply tracking-[2px];
+    }
+
+    h3 {
+      @apply font-sans;
+      @apply text-lg;
+      @apply font-normal;
+      @apply uppercase;
+      @apply tracking-[2px];
+      @apply text-center
+    }
+
+    h4 {
+      @apply font-sans;
+      @apply text-sm;
+      @apply font-normal;
+      @apply uppercase;
       @apply tracking-[2px]
     }
   
