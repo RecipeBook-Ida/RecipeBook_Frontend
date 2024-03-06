@@ -9,7 +9,7 @@ import LoginPage from "./pages/LoginPage";
 function App() {
   return (
     <BrowserRouter>
-      <div className=" px-6 flex flex-col h-screen w-full bg-green-400">
+      <div className=" px-6 fixed top-20 w-full h-full bottom-0 bg-bg">
         <Navbar></Navbar>
         <Routes>
           <Route path="/" element={<LoginPage />} />
