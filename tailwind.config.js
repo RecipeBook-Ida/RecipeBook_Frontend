@@ -14,7 +14,7 @@ export default {
           light: "#94d2bd",
           regular: "#0a9396",
           dark: "#005f73",
-          darkest: "#001219"
+          darkest: "#001219",
         },
         bookAccent: {
           lightest: "#ee9b00",
@@ -25,6 +25,7 @@ export default {
         },
         bookBG: "#fbf7f4",
         bookBgGradient: "#344977",
+        bookText: "#001219",
         
       },
     },
