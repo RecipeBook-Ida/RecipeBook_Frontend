@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
   );
 
   return (
-    <nav className="bg-bookPrimary-dark fixed inset-x-0 top-0 shadow-md text-white h-fit z-20">
+    <nav className="bg-bookBase-dark fixed inset-x-0 top-0 shadow-md text-white h-fit z-20">
       <div className="flex items-center justify-between h-20">
         <ul className="hidden md:flex space-x-4 px-6 slide-in-links">
           {filteredLinks.map((link) => (
