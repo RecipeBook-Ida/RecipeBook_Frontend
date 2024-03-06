@@ -7,7 +7,7 @@ interface InstructionListProps {
 
 const InstructionList: React.FC<InstructionListProps> = ({ subRecipes }) => {
   return (
-    <div className=" h-fit bg-red-500">
+    <div className=" overflow-y-auto pb-40 ">
       {subRecipes.map((subRecipe) => (
         <ol key={`subRecipe_${subRecipe.id}`}>
           <p>{subRecipe.title}</p>

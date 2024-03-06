@@ -18,6 +18,6 @@ function RecipePage() {
     }
   }, [recipeHook.data, recipeHook.isLoading, recipeHook.isStale]);
 
-  return recipe && <RecipeDetails recipe={recipe} />;
+  return <div className="px-6 w-full h-full">{recipe && <RecipeDetails recipe={recipe} />}</div>;
 }
 export default RecipePage;

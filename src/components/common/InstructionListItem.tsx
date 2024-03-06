@@ -17,7 +17,7 @@ const InstructionListItem: React.FC<InstructionListItemProps> = ({
   return (
     <li onClick={() => setActiveStep(!activeStep)}>
       <div className=" flex flex-row gap-5 items-center">
-        <button className=" rounded-full w-8 flex justify-center items-center bg-black aspect-square">
+        <button className=" rounded-full w-8 flex justify-center items-center bg-bookAccent-lightest text-white aspect-square">
           {activeStep ? index +1 : <FaCheck />}
         </button>
         <h3>Steg {index+1}</h3>
