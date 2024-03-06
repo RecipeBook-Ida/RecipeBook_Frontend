@@ -9,31 +9,18 @@ export default {
         mono: ['sans-serif'],
       },
       colors: {
-        bookPrimary: "#0d1821",
+        bookPrimary:{
+          light: "#8ecae6",
+          medium: "#219ebc",
+          dark: "#023047",
+        },
+      bookSec: {
+        light: "#ffb703",
+        medium: "#fb8500",
+        dark: "#9b2226",
+      },
         bookBG: "#344966",
         bookBgGradient: "#344977",
-        bookSec: "#B4CDED",
-        brandBlueLight: "#4C79AF",
-        brandBlack: "#212121",
-        brandWhite: "#FFFFFF",
-        bg: "#F0F4EF",
-        availableGreen: "#4CAF50",
-
-        brandGray: {
-          light: "#E9E9E9",
-          dark: "#3F3F3F",
-        },
-        brandOrange: {
-          regular: "#EA7E23",
-          pop: "#EA7E23",
-        },
-        score: {
-          one: "#8B2C2C",
-          two: "#FCC3C3",
-          three: "#FCFAC3",
-          four: "#C7FCC3",
-          five: "#6E8E81",
-        },
       },
     },
 
