@@ -1,0 +1,80 @@
+@tailwind base;
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* *::-webkit-scrollbar-track {
+  background: var(--primary);
+  border-radius: 5px;
+} */
+
+*::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(0, 0, 0, 0);
+  /*Transparent color to make the egdes dissapair*/
+  background-clip: padding-box;
+  /*Slim thumb*/
+  border-radius: 999px;
+  /*Round egdes*/
+  background-color: #e1e0e0;
+  /*background-color:#E9E9E9;*/
+}
+
+
+
+@layer base {
+    h1 {
+      font-family: 'Monserrat'
+    }
+
+    h2 {
+      @apply font-sans;
+      @apply text-2xl;
+      @apply font-normal;
+      @apply uppercase;
+      @apply tracking-[2px]
+    }
+  
+    small {
+      @apply font-serif;
+      @apply text-xs;
+      @apply uppercase;
+      @apply tracking-[0.5px]
+    }
+
+    body {
+      @apply font-serif;
+      @apply text-base;
+      @apply font-normal;
+      @apply tracking-[0.5px]
+    }
+
+    
+    li {
+      @apply font-serif;
+      @apply text-sm;
+      @apply font-normal;
+      @apply uppercase;
+      @apply tracking-[0.5px]
+    }
+  
+    h4 {
+      position: relative;
+      display: block;
+      border-bottom: 1px solid #eeeff0;
+      padding-top: 6px;
+      padding-left: 60px;
+      padding-bottom: 6px;
+      line-height: 18px;
+      vertical-align: baseline;
+  }
+
+  }
+  
+
+@tailwind components;
+@tailwind utilities;
+
+
+
