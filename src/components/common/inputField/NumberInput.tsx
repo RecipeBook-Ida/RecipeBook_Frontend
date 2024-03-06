@@ -19,7 +19,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
   const [input, setInput] = useState<number>(defaultValue);
 
   useEffect(() => {
-    setValue && input && setValue(input)
+    setValue && input && setValue(input);
   }, [input]);
 
   const handleAddClick = () => {
@@ -54,7 +54,6 @@ const NumberInput: React.FC<NumberInputProps> = ({
           </button>
           <input
             type="number"
-            defaultValue={defaultValue}
             value={input}
             min="1"
             onChange={handleInputChange}
