@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useGetAllRecipes } from "../services/recipe/getRecipe";
 import { Recipe } from "../types/RecipeType";
-import OpenBook from "./book/OpenBook";
 import RecipeCardGroup from "../components/common/Recipe/RecipeCardGroup";
 import Breadcrumb from "../components/common/Breadcrumb";
 
@@ -16,12 +15,10 @@ function RecipeListPage() {
   }, [recipeHook.data, recipeHook.isLoading, recipeHook.isStale]);
 
   return (
-    <OpenBook>
-      <div className=" flex flex-wrap gap-5 overflow-y-scroll h-full col-span-2">
-        <Breadcrumb/>
-        <RecipeCardGroup recipes={recipes} />
-      </div>
-    </OpenBook>
+    <div className="h-full overflow-y-auto pb-28 px-6">
+      <Breadcrumb />
+      <RecipeCardGroup recipes={recipes} />
+    </div>
   );
 }
 export default RecipeListPage;

@@ -5,7 +5,6 @@ import InstructionList from "../InstructionList";
 import { PiCookingPot } from "react-icons/pi";
 import { GiKnifeFork } from "react-icons/gi";
 import { MdDinnerDining } from "react-icons/md";
-import { CgBowl } from "react-icons/cg";
 
 interface RecipeDetailsProps {
   recipe: Recipe;
@@ -13,11 +12,11 @@ interface RecipeDetailsProps {
 
 const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
   return (
-    <div className=" col-span-2 text-white space-y-2 h-fit">
+    <div className="w-full h-full">
       <Breadcrumb />
       <h2>{recipe.title}</h2>
 
-      <div className="grid grid-cols-2 col-span-2 gap-5 pt-2">
+      <div className="grid grid-cols-2 col-span-2 gap-5 pt-2 h-full">
         <div className="grid grid-cols-2 space-y-2 gap-5">
           <div className=" space-y-4 ">
             <img
@@ -27,10 +26,6 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
             />
 
             <div className=" flex flex-wrap gap-4 w-full justify-evenly ">
-              <li className="flex flex-col items-center">
-              <CgBowl  size={25} />
-                <p>{recipe.portion} porsjoner</p>
-              </li>
               <li className="flex flex-col items-center">
                 <PiCookingPot size={25} />
                 <p>{recipe.cooktime} min</p>
@@ -48,13 +43,10 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
             <p>{recipe.description}</p>
           </div>
 
-          <div className="flex flex-wrap gap-6">
-            <IngredientList subRecipes={recipe.subRecipes}></IngredientList>
-          </div>
+          <IngredientList recipe={recipe}></IngredientList>
         </div>
-        
-          <InstructionList subRecipes={recipe.subRecipes}></InstructionList>
-        
+
+        <InstructionList subRecipes={recipe.subRecipes}></InstructionList>
       </div>
     </div>
   );
