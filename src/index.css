@@ -42,7 +42,8 @@
       @apply font-normal;
       @apply uppercase;
       @apply tracking-[2px];
-      @apply text-center
+      @apply text-center;
+      @apply pb-4;
     }
 
     h4 {
@@ -50,7 +51,7 @@
       @apply text-sm;
       @apply font-normal;
       @apply uppercase;
-      @apply tracking-[2px]
+      @apply tracking-[2px];
     }
   
     small {
