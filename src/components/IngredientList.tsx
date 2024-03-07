@@ -18,7 +18,7 @@ const IngredientList: React.FC<IngredientListProps> = ({ recipe }) => {
   };
 
   return (
-    <div className=" space-y-10 flex items-center flex-col">
+    <div className="flex items-center flex-col">
       <h3>Ingredienser</h3>
 
       <NumberInput

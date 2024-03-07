@@ -16,8 +16,8 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
       <Breadcrumb />
       <h2>{recipe.title}</h2>
 
-      <div className="grid grid-cols-2 col-span-2 gap-5 pt-2 h-full">
-        <div className="grid grid-cols-2 space-y-2 gap-5">
+      <div className="flex gap-5 pt-2 h-full">
+        <div className=" w-1/2  overflow-y-auto pb-40 space-y-2 gap-5">
           <div className=" space-y-4 ">
             <img
               src={recipe.image}
