@@ -11,7 +11,8 @@ export const getAllIngredients = async (): Promise<any> => {
           },
       }).then((data) => data.json());
       return await res
-      
+
+    
 
 };
 export const getIngredientById = async ( id?: number) => {
