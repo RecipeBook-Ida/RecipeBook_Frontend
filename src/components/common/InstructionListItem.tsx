@@ -27,7 +27,7 @@ const InstructionListItem: React.FC<InstructionListItemProps> = ({
         {activeStep && (
           <Collapse>
             {subRecipe.instructions.split("\\n").map((step, index) => (
-              <Stepper text={step} index={index}></Stepper>
+              <Stepper text={step} index={index} key={`step-${index}`}></Stepper>
             ))}
           </Collapse>
         )}
