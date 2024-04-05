@@ -18,6 +18,15 @@ function RecipePage() {
     }
   }, [recipeHook.data, recipeHook.isLoading, recipeHook.isStale]);
 
-  return <div className="px-6 w-full h-full">{recipe && <RecipeDetails recipe={recipe} />}</div>;
+  if (recipeHook.isPending || !recipe) return "Loading...";
+
+  if (recipeHook.error)
+    return "An error has occurred: " + recipeHook.error.message;
+
+  return (
+    <div className="w-full h-full">
+      <RecipeDetails recipe={recipe} />
+    </div>
+  );
 }
 export default RecipePage;
