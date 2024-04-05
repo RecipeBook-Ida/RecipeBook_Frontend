@@ -5,12 +5,34 @@ import InstructionList from "../InstructionList";
 import { PiCookingPot } from "react-icons/pi";
 import { GiKnifeFork } from "react-icons/gi";
 import { MdDinnerDining } from "react-icons/md";
+import { useGetUserById } from "../../../services/user/getUser";
+import { useEffect, useState } from "react";
+import { User } from "../../../types/UserType";
+import { useUpdateGroceryList } from "../../../services/user/putUser";
 
 interface RecipeDetailsProps {
   recipe: Recipe;
 }
 
 const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
+  const userHook = useGetUserById(1);
+  const [user, setUser] = useState<User>();
+  const updateGroceryList = useUpdateGroceryList(1);
+
+  useEffect(() => {
+    if (!userHook.isLoading && userHook.data) {
+      setUser(userHook.data as User);
+    }
+  }, [userHook.data, userHook.isLoading, userHook.isStale]);
+
+  const handleAddToGroceryListClick = async () => {
+    const groceries = recipe.subRecipes
+      .flatMap((subRecipe) => subRecipe.ingredients)
+      .map((ingredient) => ingredient.id);
+    const updatedUser = await updateGroceryList.mutateAsync(groceries);
+    setUser(updatedUser);
+  };
+
   return (
     <div className="w-full h-full">
       <Breadcrumb />
@@ -25,6 +47,9 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
               className=" rounded-md aspect-auto object-cover bg-white"
             />
 
+            <button onClick={handleAddToGroceryListClick}>
+              legg til i handlelisten
+            </button>
             <div className=" flex flex-wrap gap-4 w-full justify-evenly ">
               <li className="flex flex-col items-center">
                 <PiCookingPot size={25} />
@@ -43,10 +68,13 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
             <p>{recipe.description}</p>
           </div>
 
-          <IngredientList recipe={recipe}></IngredientList>
+          <IngredientList recipe={recipe} key={recipe.id}></IngredientList>
         </div>
 
-        <InstructionList subRecipes={recipe.subRecipes}></InstructionList>
+        <InstructionList
+          subRecipes={recipe.subRecipes}
+          key={recipe.id}
+        ></InstructionList>
       </div>
     </div>
   );
