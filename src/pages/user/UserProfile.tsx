@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useGetAllUsers } from "../../services/user/getUsers";
+
 import { User } from "../../types/UserType";
 import OpenBook from "../book/OpenBook";
+import { useGetAllUsers } from "../../services/user/getUser";
 
 function UserProfile() {
   const userHook = useGetAllUsers();
@@ -13,12 +14,10 @@ function UserProfile() {
     }
   }, [userHook.data, userHook.isLoading, userHook.isStale]);
 
-  console.log(user)
+  console.log(user);
   return (
     <OpenBook>
-      <div>
-        
-      </div>
+      <div></div>
     </OpenBook>
   );
 }

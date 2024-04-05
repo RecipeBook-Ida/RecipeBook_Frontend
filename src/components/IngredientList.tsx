@@ -13,12 +13,12 @@ const IngredientList: React.FC<IngredientListProps> = ({ recipe }) => {
 
   const calcAmountOfIngredient = (ingredient: IngredientQuantity) => {
     const forhold = portion / recipe.portion;
-    const quantity = Math.round(ingredient.quantity * forhold*100)/100;
+    const quantity = Math.round(ingredient.quantity * forhold * 100) / 100;
     return <p>{quantity + " " + ingredient.unit}</p>;
   };
 
   return (
-    <div className=" space-y-10 flex items-center flex-col">
+    <div className="flex items-center flex-col">
       <h3>Ingredienser</h3>
 
       <NumberInput
@@ -33,10 +33,9 @@ const IngredientList: React.FC<IngredientListProps> = ({ recipe }) => {
           <h4>{subRecipe.title}</h4>
           {subRecipe.ingredients.map((ingredient) => (
             <li
-              className=" grid grid-cols-2 border-b-2"
+              className=" grid grid-cols-2 border-b-2 border-bookBase-darkest"
               key={`subRecipe_${subRecipe.id}-ingredient_${ingredient.id}`}
             >
-              {/*  <p>{ingredient.quantity}{ + " " + ingredient.unit}</p> */}
               {calcAmountOfIngredient(ingredient)}
               <p>{ingredient.ingredient.name}</p>
             </li>

@@ -5,48 +5,64 @@ import InstructionList from "../InstructionList";
 import { PiCookingPot } from "react-icons/pi";
 import { GiKnifeFork } from "react-icons/gi";
 import { MdDinnerDining } from "react-icons/md";
+import { useUpdateGroceryList } from "../../../services/user/putUser";
+import { MdLocalGroceryStore } from "react-icons/md";
 
 interface RecipeDetailsProps {
   recipe: Recipe;
 }
 
 const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
+  const updateGroceryList = useUpdateGroceryList(1);
+
+  const handleAddToGroceryListClick = async () => {
+    const groceries = recipe.subRecipes
+      .flatMap((subRecipe) => subRecipe.ingredients)
+      .map((ingredient) => ingredient.id);
+    await updateGroceryList.mutateAsync(groceries);
+  };
+
   return (
-    <div className="w-full h-full">
-      <Breadcrumb />
-      <h2>{recipe.title}</h2>
+    <div className="w-full h-full flex gap-5">
+      <div className="w-1/3 space-y-4 overflow-y-auto pb-28 p-3 bg-bookBase-light text-bookBase-darkest">
+        <Breadcrumb />
+        <img
+          src={recipe.image}
+          alt={recipe.title}
+          className=" rounded-md aspect-auto object-cover"
+        />
 
-      <div className="grid grid-cols-2 col-span-2 gap-5 pt-2 h-full">
-        <div className="grid grid-cols-2 space-y-2 gap-5">
-          <div className=" space-y-4 ">
-            <img
-              src={recipe.image}
-              alt={recipe.title}
-              className=" rounded-md aspect-auto object-cover bg-white"
-            />
-
-            <div className=" flex flex-wrap gap-4 w-full justify-evenly ">
-              <li className="flex flex-col items-center">
-                <PiCookingPot size={25} />
-                <p>{recipe.cooktime} min</p>
-              </li>
-              <li className="flex flex-col items-center">
-                <MdDinnerDining size={25} />
-                <p>{recipe.cuisine}</p>
-              </li>
-              <li className="flex flex-col items-center">
-                <GiKnifeFork size={25} />
-                <p>{recipe.type}</p>
-              </li>
-            </div>
-
-            <p>{recipe.description}</p>
-          </div>
-
-          <IngredientList recipe={recipe}></IngredientList>
+        <div className=" flex flex-wrap gap-4 w-full justify-evenly ">
+          <button
+            className="flex flex-col items-center"
+            onClick={handleAddToGroceryListClick}
+          >
+            <MdLocalGroceryStore size={20} />
+            <p> legg til i handlelisten</p>
+          </button>
         </div>
 
-        <InstructionList subRecipes={recipe.subRecipes}></InstructionList>
+        <div className=" flex flex-wrap gap-4 w-full justify-evenly ">
+          <li className="flex flex-col items-center">
+            <PiCookingPot size={25} />
+            <p>{recipe.cooktime} min</p>
+          </li>
+          <li className="flex flex-col items-center">
+            <MdDinnerDining size={25} />
+            <p>{recipe.cuisine}</p>
+          </li>
+          <li className="flex flex-col items-center">
+            <GiKnifeFork size={25} />
+            <p>{recipe.type}</p>
+          </li>
+        </div>
+        <p>{recipe.description}</p>
+        <IngredientList recipe={recipe} />
+      </div>
+
+      <div className="overflow-auto w-2/3">
+        <h2>{recipe.title}</h2>
+        <InstructionList subRecipes={recipe.subRecipes} />
       </div>
     </div>
   );

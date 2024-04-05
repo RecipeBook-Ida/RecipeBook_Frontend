@@ -34,6 +34,7 @@
       @apply font-normal;
       @apply uppercase;
       @apply tracking-[2px];
+      @apply py-4;
     }
 
     h3 {
@@ -52,6 +53,7 @@
       @apply font-normal;
       @apply uppercase;
       @apply tracking-[2px];
+      @apply py-4;
     }
   
     small {
@@ -75,6 +77,10 @@
       @apply font-normal;
       @apply uppercase;
       @apply tracking-[0.5px]
+    }
+
+    li h3 {
+      @apply pb-0;
     }
   
 
