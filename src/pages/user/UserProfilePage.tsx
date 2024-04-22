@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { User } from "../../types/UserType";
 import { useGetUserById } from "../../services/user/getUser";
 import GroceryList from "../../components/user/GroceryList";
+import UserInfo from "../../components/user/UserInfo";
 
 function UserProfilePage() {
   const userHook = useGetUserById(1);
@@ -19,6 +20,7 @@ function UserProfilePage() {
 
   return (
     <>
+      <UserInfo user={user} />
       <GroceryList groceries={user.groceryList} />
     </>
   );
