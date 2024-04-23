@@ -12,14 +12,20 @@ import {
 import { MdLocalGroceryStore } from "react-icons/md";
 import { MdFavoriteBorder } from "react-icons/md";
 import { MdFavorite } from "react-icons/md";
+import { useState } from "react";
+import { User, dummyUser } from "../../../types/UserType";
 
 interface RecipeDetailsProps {
   recipe: Recipe;
 }
 
 const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
-  const updateGroceryList = useUpdateGroceryList(1);
-  const updateFavorites = useUpdateFavorites(1);
+  const user: User = dummyUser;
+  const updateGroceryList = useUpdateGroceryList(user.id);
+  const updateFavorites = useUpdateFavorites(user.id);
+  const [infavorites, setInFavorites] = useState(
+    !!user.favorites.find((f) => f == recipe)
+  );
 
   const handleAddToGroceryListClick = async () => {
     const groceries = recipe.subRecipes
@@ -29,10 +35,15 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
   };
 
   const handleAddToFavoriteClick = async () => {
-    const favorites = [1, 2];
-    const groceries = recipe.subRecipes
-      .flatMap((subRecipe) => subRecipe.ingredients)
-      .map((ingredient) => ingredient.id);
+    let favorites = user.favorites.map((recipe) => recipe.id);
+    console.log("org", favorites);
+    if (infavorites) {
+      favorites.filter((f) => f != recipe.id);
+    } else {
+      favorites.push(recipe.id);
+    }
+    console.log("after", favorites);
+    setInFavorites(!infavorites);
     await updateFavorites.mutateAsync(favorites);
   };
 
@@ -58,7 +69,11 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
             className="flex flex-col items-center"
             onClick={handleAddToFavoriteClick}
           >
-            <MdFavoriteBorder size={20} />
+            {infavorites ? (
+              <MdFavorite size={20} />
+            ) : (
+              <MdFavoriteBorder size={20} />
+            )}
             {/* <p> legg til i favoriter</p> */}
           </button>
         </div>
