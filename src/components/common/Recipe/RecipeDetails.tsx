@@ -14,6 +14,7 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { MdFavorite } from "react-icons/md";
 import { useState } from "react";
 import { User, dummyUser } from "../../../types/UserType";
+import BasicTooltip from "../BasicTooltip";
 
 interface RecipeDetailsProps {
   recipe: Recipe;
@@ -58,24 +59,29 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
         />
 
         <div className=" flex flex-wrap gap-4 w-full justify-evenly ">
-          <button
-            className="flex flex-col items-center"
-            onClick={handleAddToGroceryListClick}
-          >
-            <MdLocalGroceryStore size={20} />
-            {/* <p> legg til i handlelisten</p> */}
-          </button>
-          <button
-            className="flex flex-col items-center"
-            onClick={handleAddToFavoriteClick}
-          >
-            {infavorites ? (
-              <MdFavorite size={20} />
-            ) : (
-              <MdFavoriteBorder size={20} />
-            )}
-            {/* <p> legg til i favoriter</p> */}
-          </button>
+          <BasicTooltip text="Legg til i handlelisten">
+            <button
+              className="flex flex-col items-center"
+              onClick={handleAddToGroceryListClick}
+            >
+              <MdLocalGroceryStore size={20} />
+              {/* <p> legg til i handlelisten</p> */}
+            </button>
+          </BasicTooltip>
+
+          <BasicTooltip text="Legg til i favoriter">
+            <button
+              className="flex flex-col items-center"
+              onClick={handleAddToFavoriteClick}
+            >
+              {infavorites ? (
+                <MdFavorite size={20} />
+              ) : (
+                <MdFavoriteBorder size={20} />
+              )}
+              {/* <p> legg til i favoriter</p> */}
+            </button>
+          </BasicTooltip>
         </div>
 
         <div className=" flex flex-wrap gap-4 w-full justify-evenly ">
