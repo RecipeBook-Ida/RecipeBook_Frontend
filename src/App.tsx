@@ -1,10 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import UserProfile from "./pages/user/UserProfile";
 import Navbar from "./components/common/Navbar";
 import IngredientsPage from "./pages/IngredientsPage";
 import RecipeListPage from "./pages/RecipeListPage";
 import RecipePage from "./pages/RecipePage";
 import LoginPage from "./pages/LoginPage";
+import UserProfilePage from "./pages/user/UserProfilePage";
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
         <Navbar></Navbar>
         <Routes>
           <Route path="/" element={<LoginPage />} />
-          <Route path="/profil" element={<UserProfile />} />
+          <Route path="/profil" element={<UserProfilePage />} />
           <Route path="/ingredient" element={<IngredientsPage />} />
           <Route path="/oppskrifter" element={<RecipeListPage />} />
           <Route path="/oppskrifter/:id" element={<RecipePage />} />

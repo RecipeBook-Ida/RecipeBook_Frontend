@@ -1,8 +1,8 @@
-import { Recipe } from "../../../types/RecipeType";
+import { RecipeList } from "../../../types/RecipeType";
 import RecipeCard from "./RecipeCard";
 
 interface RecipeCardGroupProps {
-  recipes: Recipe[];
+  recipes: RecipeList[];
 }
 
 const RecipeCardGroup: React.FC<RecipeCardGroupProps> = ({ recipes }) => {

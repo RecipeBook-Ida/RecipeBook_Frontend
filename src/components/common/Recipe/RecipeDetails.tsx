@@ -5,21 +5,47 @@ import InstructionList from "../InstructionList";
 import { PiCookingPot } from "react-icons/pi";
 import { GiKnifeFork } from "react-icons/gi";
 import { MdDinnerDining } from "react-icons/md";
-import { useUpdateGroceryList } from "../../../services/user/putUser";
+import {
+  useUpdateFavorites,
+  useUpdateGroceryList,
+} from "../../../services/user/putUser";
 import { MdLocalGroceryStore } from "react-icons/md";
+import { MdFavoriteBorder } from "react-icons/md";
+import { MdFavorite } from "react-icons/md";
+import { useState } from "react";
+import { User, dummyUser } from "../../../types/UserType";
+import BasicTooltip from "../BasicTooltip";
 
 interface RecipeDetailsProps {
   recipe: Recipe;
 }
 
 const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
-  const updateGroceryList = useUpdateGroceryList(1);
+  const user: User = dummyUser;
+  const updateGroceryList = useUpdateGroceryList(user.id);
+  const updateFavorites = useUpdateFavorites(user.id);
+  const [infavorites, setInFavorites] = useState(
+    !!user.favorites.find((f) => f == recipe)
+  );
 
   const handleAddToGroceryListClick = async () => {
     const groceries = recipe.subRecipes
       .flatMap((subRecipe) => subRecipe.ingredients)
       .map((ingredient) => ingredient.id);
     await updateGroceryList.mutateAsync(groceries);
+  };
+
+  const handleAddToFavoriteClick = async () => {
+    let favorites = user.favorites.map((recipe) => recipe.id);
+    console.log("org", favorites);
+    if (infavorites) {
+      favorites.filter((f) => f != recipe.id);
+    } else {
+      favorites.push(recipe.id);
+    }
+    console.log("after", favorites);
+    setInFavorites(!infavorites);
+    await updateFavorites.mutateAsync(favorites);
   };
 
   return (
@@ -33,13 +59,29 @@ const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
         />
 
         <div className=" flex flex-wrap gap-4 w-full justify-evenly ">
-          <button
-            className="flex flex-col items-center"
-            onClick={handleAddToGroceryListClick}
-          >
-            <MdLocalGroceryStore size={20} />
-            <p> legg til i handlelisten</p>
-          </button>
+          <BasicTooltip text="Legg til i handlelisten">
+            <button
+              className="flex flex-col items-center"
+              onClick={handleAddToGroceryListClick}
+            >
+              <MdLocalGroceryStore size={20} />
+              {/* <p> legg til i handlelisten</p> */}
+            </button>
+          </BasicTooltip>
+
+          <BasicTooltip text="Legg til i favoriter">
+            <button
+              className="flex flex-col items-center"
+              onClick={handleAddToFavoriteClick}
+            >
+              {infavorites ? (
+                <MdFavorite size={20} />
+              ) : (
+                <MdFavoriteBorder size={20} />
+              )}
+              {/* <p> legg til i favoriter</p> */}
+            </button>
+          </BasicTooltip>
         </div>
 
         <div className=" flex flex-wrap gap-4 w-full justify-evenly ">

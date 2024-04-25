@@ -60,3 +60,33 @@ export const useUpdateGroceryList = (userId: number) => {
   });
   return result;
 };
+
+export const useUpdateFavorites = (userId: number) => {
+  const putFavorites= async (userId: number, data: number[]) => {
+    try {
+      const response = await appUserApi.put(
+        `/update/favorites/${userId}`,
+        {
+            recipeIds: data
+          },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log("Response ", response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+  const result = useMutation({
+    mutationKey: ["putGroceryList"],
+    mutationFn: async (data: number[]) => await putFavorites(userId, data),
+    retry: 0,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["get", "users"] });
+    },
+  });
+  return result;
+};
