@@ -12,6 +12,12 @@ export type User = {
   favorites: RecipeList[];
 };
 
+export type UserList = {
+  id: number;
+  image: string;
+  username: string;
+};
+
 export const dummyUser = {
   id: 1,
   image: "https://example.com/chocolate-lava-cake.jpg",
