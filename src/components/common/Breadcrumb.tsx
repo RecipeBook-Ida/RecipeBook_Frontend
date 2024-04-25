@@ -20,7 +20,7 @@ const Breadcrumb: React.FC = () => {
   let breadcrumbs = generateBreadcrumbs(path);
 
   return (
-    <ul className="flex items-center text-white">
+    <ul className="flex items-center">
       {breadcrumbs.map((breadcrumb) => (
         <Link to={breadcrumb} className="flex items-center" key={breadcrumb}>
           <small>

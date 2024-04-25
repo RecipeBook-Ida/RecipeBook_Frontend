@@ -5,56 +5,106 @@ import InstructionList from "../InstructionList";
 import { PiCookingPot } from "react-icons/pi";
 import { GiKnifeFork } from "react-icons/gi";
 import { MdDinnerDining } from "react-icons/md";
-import { CgBowl } from "react-icons/cg";
+import {
+  useUpdateFavorites,
+  useUpdateGroceryList,
+} from "../../../services/user/putUser";
+import { MdLocalGroceryStore } from "react-icons/md";
+import { MdFavoriteBorder } from "react-icons/md";
+import { MdFavorite } from "react-icons/md";
+import { useState } from "react";
+import { User, dummyUser } from "../../../types/UserType";
+import BasicTooltip from "../BasicTooltip";
 
 interface RecipeDetailsProps {
   recipe: Recipe;
 }
 
 const RecipeDetails: React.FC<RecipeDetailsProps> = ({ recipe }) => {
+  const user: User = dummyUser;
+  const updateGroceryList = useUpdateGroceryList(user.id);
+  const updateFavorites = useUpdateFavorites(user.id);
+  const [infavorites, setInFavorites] = useState(
+    !!user.favorites.find((f) => f == recipe)
+  );
+
+  const handleAddToGroceryListClick = async () => {
+    const groceries = recipe.subRecipes
+      .flatMap((subRecipe) => subRecipe.ingredients)
+      .map((ingredient) => ingredient.id);
+    await updateGroceryList.mutateAsync(groceries);
+  };
+
+  const handleAddToFavoriteClick = async () => {
+    let favorites = user.favorites.map((recipe) => recipe.id);
+    console.log("org", favorites);
+    if (infavorites) {
+      favorites.filter((f) => f != recipe.id);
+    } else {
+      favorites.push(recipe.id);
+    }
+    console.log("after", favorites);
+    setInFavorites(!infavorites);
+    await updateFavorites.mutateAsync(favorites);
+  };
+
   return (
-    <div className=" col-span-2 text-white space-y-2 h-fit">
-      <Breadcrumb />
-      <h2>{recipe.title}</h2>
+    <div className="w-full h-full flex gap-5">
+      <div className="w-1/3 space-y-4 overflow-y-auto pb-28 p-3 bg-bookBase-light text-bookBase-darkest">
+        <Breadcrumb />
+        <img
+          src={recipe.image}
+          alt={recipe.title}
+          className=" rounded-md aspect-auto object-cover"
+        />
 
-      <div className="grid grid-cols-2 col-span-2 gap-5 pt-2">
-        <div className="grid grid-cols-2 space-y-2 gap-5">
-          <div className=" space-y-4 ">
-            <img
-              src={recipe.image}
-              alt={recipe.title}
-              className=" rounded-md aspect-auto object-cover bg-white"
-            />
+        <div className=" flex flex-wrap gap-4 w-full justify-evenly ">
+          <BasicTooltip text="Legg til i handlelisten">
+            <button
+              className="flex flex-col items-center"
+              onClick={handleAddToGroceryListClick}
+            >
+              <MdLocalGroceryStore size={20} />
+              {/* <p> legg til i handlelisten</p> */}
+            </button>
+          </BasicTooltip>
 
-            <div className=" flex flex-wrap gap-4 w-full justify-evenly ">
-              <li className="flex flex-col items-center">
-              <CgBowl  size={25} />
-                <p>{recipe.portion} porsjoner</p>
-              </li>
-              <li className="flex flex-col items-center">
-                <PiCookingPot size={25} />
-                <p>{recipe.cooktime} min</p>
-              </li>
-              <li className="flex flex-col items-center">
-                <MdDinnerDining size={25} />
-                <p>{recipe.cuisine}</p>
-              </li>
-              <li className="flex flex-col items-center">
-                <GiKnifeFork size={25} />
-                <p>{recipe.type}</p>
-              </li>
-            </div>
-
-            <p>{recipe.description}</p>
-          </div>
-
-          <div className="flex flex-wrap gap-6">
-            <IngredientList subRecipes={recipe.subRecipes}></IngredientList>
-          </div>
+          <BasicTooltip text="Legg til i favoriter">
+            <button
+              className="flex flex-col items-center"
+              onClick={handleAddToFavoriteClick}
+            >
+              {infavorites ? (
+                <MdFavorite size={20} />
+              ) : (
+                <MdFavoriteBorder size={20} />
+              )}
+              {/* <p> legg til i favoriter</p> */}
+            </button>
+          </BasicTooltip>
         </div>
-        
-          <InstructionList subRecipes={recipe.subRecipes}></InstructionList>
-        
+
+        <div className=" flex flex-wrap gap-4 w-full justify-evenly ">
+          <li className="flex flex-col items-center">
+            <PiCookingPot size={25} />
+            <p>{recipe.cooktime} min</p>
+          </li>
+          <li className="flex flex-col items-center">
+            <MdDinnerDining size={25} />
+            <p>{recipe.cuisine}</p>
+          </li>
+          <li className="flex flex-col items-center">
+            <GiKnifeFork size={25} />
+            <p>{recipe.type}</p>
+          </li>
+        </div>
+        <p>{recipe.description}</p>
+        <IngredientList recipe={recipe} />
+      </div>
+
+      <div className="overflow-auto w-2/3">
+        <h2>{recipe.title}</h2>
+        <InstructionList subRecipes={recipe.subRecipes} />
       </div>
     </div>
   );

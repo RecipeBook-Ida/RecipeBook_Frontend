@@ -14,11 +14,7 @@ const NavLink: React.FC<NavLinkProps> = ({ to, text }) => {
     <li>
       <Link
         to={to}
-        className={`hover:opacity-100 p-2 flex rounded-t-lg ${
-          isActive
-            ? "font-bold text-white hover:text-bookPrimary bg-bookBG"
-            : "opacity-75 bg-bookSec text-bookPrimary"
-        }`}
+        className={`hover:opacity-100 ${isActive ? "font-bold hover:text-white" : "opacity-75"}`}
       >
         {text}
       </Link>

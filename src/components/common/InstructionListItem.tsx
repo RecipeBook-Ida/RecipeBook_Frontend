@@ -1,30 +1,38 @@
-import { Collapse } from "@mui/material";
 import { useState } from "react";
-import { FaCheck } from "react-icons/fa6";
+import Stepper from "./stepper";
+import { SubRecipe } from "../../types/RecipeType";
+import { IoIosArrowDown } from "react-icons/io";
 import { TransitionGroup } from "react-transition-group";
+import { Collapse } from "@mui/material";
 
 interface InstructionListItemProps {
-  instruction: string;
-  index: number;
+  subRecipe: SubRecipe;
 }
 
 const InstructionListItem: React.FC<InstructionListItemProps> = ({
-  instruction,
-  index,
+  subRecipe,
 }) => {
   const [activeStep, setActiveStep] = useState<boolean>(true);
 
   return (
-    <li onClick={() => setActiveStep(!activeStep)}>
-      <div className=" flex flex-row gap-5 items-center">
-        <button className=" rounded-full w-8 flex justify-center items-center bg-black aspect-square">
-          {activeStep ? index +1 : <FaCheck />}
-        </button>
-        <h3>Steg {index+1}</h3>
-      </div>
-      <TransitionGroup className="ml-4 my-2 pl-9 border-l py-1">{activeStep && <Collapse>{instruction}</Collapse> }</TransitionGroup>
-      
-    </li>
+    <ol key={`subRecipe_${subRecipe.id}`}>
+      <h3
+        className="flex  items-center"
+        onClick={() => setActiveStep(!activeStep)}
+      >
+        {subRecipe.title} <IoIosArrowDown className={activeStep ? "rotate-180" : "rotate-0"} />
+      </h3>
+
+      <TransitionGroup className="">
+        {activeStep && (
+          <Collapse>
+            {subRecipe.instructions.split("\\n").map((step, index) => (
+              <Stepper text={step} index={index} key={`step-${index}`}></Stepper>
+            ))}
+          </Collapse>
+        )}
+      </TransitionGroup>
+    </ol>
   );
 };
 export default InstructionListItem;

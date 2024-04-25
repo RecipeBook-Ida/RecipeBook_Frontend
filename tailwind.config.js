@@ -9,31 +9,24 @@ export default {
         mono: ['sans-serif'],
       },
       colors: {
-        bookPrimary: "#0d1821",
-        bookBG: "#344966",
+        bookNeutral: "#e9d8a6",
+        bookBase:{
+          light: "#94d2bd",
+          regular: "#0a9396",
+          dark: "#005f73",
+          darkest: "#001219",
+        },
+        bookAccent: {
+          lightest: "#ee9b00",
+          light: "#ca6702",
+          regular: "#bb3e03",
+          dark: "#ae2012",
+          darkest: "#9b2226"
+        },
+        bookBG: "#fbf7f4",
         bookBgGradient: "#344977",
-        bookSec: "#B4CDED",
-        brandBlueLight: "#4C79AF",
-        brandBlack: "#212121",
-        brandWhite: "#FFFFFF",
-        bg: "#F0F4EF",
-        availableGreen: "#4CAF50",
-
-        brandGray: {
-          light: "#E9E9E9",
-          dark: "#3F3F3F",
-        },
-        brandOrange: {
-          regular: "#EA7E23",
-          pop: "#EA7E23",
-        },
-        score: {
-          one: "#8B2C2C",
-          two: "#FCC3C3",
-          three: "#FCFAC3",
-          four: "#C7FCC3",
-          five: "#6E8E81",
-        },
+        bookText: "#001219",
+        
       },
     },
 

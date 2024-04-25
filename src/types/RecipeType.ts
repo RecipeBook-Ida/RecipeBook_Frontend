@@ -12,6 +12,13 @@ export type Recipe = {
   subRecipes: SubRecipe[];
 };
 
+export type RecipeList = {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+};
+
 export type SubRecipe = {
   id: number;
   title: string;

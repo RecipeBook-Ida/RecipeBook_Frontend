@@ -33,7 +33,27 @@
       @apply text-2xl;
       @apply font-normal;
       @apply uppercase;
-      @apply tracking-[2px]
+      @apply tracking-[2px];
+      @apply py-4;
+    }
+
+    h3 {
+      @apply font-sans;
+      @apply text-lg;
+      @apply font-normal;
+      @apply uppercase;
+      @apply tracking-[2px];
+      @apply text-center;
+      @apply pb-4;
+    }
+
+    h4 {
+      @apply font-sans;
+      @apply text-sm;
+      @apply font-normal;
+      @apply uppercase;
+      @apply tracking-[2px];
+      @apply py-4;
     }
   
     small {
@@ -58,17 +78,11 @@
       @apply uppercase;
       @apply tracking-[0.5px]
     }
+
+    li h3 {
+      @apply pb-0;
+    }
   
-    h4 {
-      position: relative;
-      display: block;
-      border-bottom: 1px solid #eeeff0;
-      padding-top: 6px;
-      padding-left: 60px;
-      padding-bottom: 6px;
-      line-height: 18px;
-      vertical-align: baseline;
-  }
 
   }
   

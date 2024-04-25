@@ -28,11 +28,15 @@ const Navbar: React.FC = () => {
   );
 
   return (
-    <ul className="flex space-x-2 ml-20 pt-2">
-      {filteredLinks.map((link) => (
-        <NavLink to={link.path} text={link.text} key={link.text} />
-      ))}
-    </ul>
+    <nav className="bg-bookBase-dark fixed inset-x-0 top-0 shadow-md text-white h-fit z-20">
+      <div className="flex items-center justify-between h-20">
+        <ul className="hidden md:flex space-x-4 px-6 slide-in-links">
+          {filteredLinks.map((link) => (
+            <NavLink to={link.path} text={link.text} key={link.text} />
+          ))}
+        </ul>
+      </div>
+    </nav>
   );
 };
 export default Navbar;
