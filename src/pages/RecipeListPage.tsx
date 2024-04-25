@@ -17,7 +17,7 @@ function RecipeListPage() {
   return (
     <div className="h-full overflow-y-auto pb-28 px-6">
       <Breadcrumb />
-      <RecipeCardGroup recipes={recipes} />
+      <RecipeCardGroup recipes={recipes} size="large"/>
     </div>
   );
 }
