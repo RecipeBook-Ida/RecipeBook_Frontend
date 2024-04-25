@@ -3,6 +3,7 @@ import { RecipeList } from "./RecipeType";
 
 export type User = {
   id: number;
+  image: string;
   username: string;
   firstname: string;
   lastname: string;
@@ -13,6 +14,7 @@ export type User = {
 
 export const dummyUser = {
   id: 1,
+  image: "https://example.com/chocolate-lava-cake.jpg",
   username: "idap",
   firstname: "Ida",
   lastname: "L",

@@ -19,10 +19,10 @@ function UserProfilePage() {
   if (userHook.error) return "An error has occurred: " + userHook.error.message;
 
   return (
-    <>
+    <div className=" w-full h-full overflow-auto pb-32">
       <UserInfo user={user} />
       <GroceryList groceries={user.groceryList} />
-    </>
+    </div>
   );
 }
 export default UserProfilePage;
