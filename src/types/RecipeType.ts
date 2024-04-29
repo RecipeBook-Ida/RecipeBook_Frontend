@@ -1,4 +1,4 @@
-import { IngredientQuantity } from "./Ingredient";
+import { IngredientQuantity, IngredientQuantityPost } from "./Ingredient";
 import { UserList } from "./UserType";
 
 export type Recipe = {
@@ -25,9 +25,27 @@ export type RecipeList = {
   portion: number;
 };
 
+export type RecipePost = {
+  title: string;
+  description: string;
+  cooktime: number;
+  image: string;
+  cuisine: string;
+  type: string;
+  portion: number;
+  subRecipeIds: number[];
+  appUser: number;
+};
+
 export type SubRecipe = {
   id: number;
   title: string;
   instructions: string;
   ingredients: IngredientQuantity[];
+};
+
+export type SubRecipePost = {
+  title: string;
+  instructions: string;
+  ingredients: IngredientQuantityPost[];
 };

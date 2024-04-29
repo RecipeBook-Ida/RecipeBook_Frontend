@@ -11,3 +11,9 @@ export type IngredientQuantity = {
   unit: string;
   ingredient: Ingredient;
 };
+
+export type IngredientQuantityPost = {
+  quantity: number;
+  unit: string;
+  ingredientId: number;
+};
