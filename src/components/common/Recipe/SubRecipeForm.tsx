@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 import IngredientQuantityForm from "./IngredientQuantityForm";
 import { Ingredient } from "../../../types/Ingredient";
@@ -66,6 +66,28 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
     }
   };
 
+  const handleAddIngredient = () => {
+    const subRecipes = [...formData.subRecipes];
+    subRecipes[index].ingredients.push({
+      quantity: 0,
+      unit: "",
+      ingredientId: 0,
+    });
+
+    setFormData({
+      ...formData,
+      subRecipes: subRecipes,
+    });
+
+    console.log(formData);
+  };
+
+  const handleDelete = (i: number) => {
+    const deleteIngredient = [...formData.subRecipes];
+    deleteIngredient[index].ingredients.splice(i, 1);
+    setFormData({ ...formData, subRecipes: deleteIngredient });
+  };
+
   return (
     <div className=" ">
       <TextField
@@ -79,7 +101,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
         helperText={formErrors.title && "Fill"}
       />
       <TextField
-        id="instructions"
+        name="instructions"
         label="Instruksjoner"
         multiline
         fullWidth
@@ -89,10 +111,22 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
         helperText={formErrors.instruction && "Fill"}
       />
 
-      <IngredientQuantityForm
-        ingredients={ingredients}
-        //setIngredient={setFormData}
-      ></IngredientQuantityForm>
+      {formData.subRecipes[index].ingredients.map((_singredient, index) => (
+        <>
+          <IngredientQuantityForm
+            index={index}
+            formData={formData}
+            setFormData={setFormData}
+            ingredients={ingredients}
+          ></IngredientQuantityForm>
+
+          <Button onClick={() => handleDelete(index)}>Delete</Button>
+        </>
+      ))}
+
+      <Button variant="contained" color="primary" onClick={handleAddIngredient}>
+        + ingrediens
+      </Button>
     </div>
   );
 };

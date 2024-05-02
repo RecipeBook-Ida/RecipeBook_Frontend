@@ -99,7 +99,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     } else alert("Venligst fyll ut alle felt.");
   };
 
-  const handleAddSubRecipe = async (e: any) => {
+  const handleAddSubRecipe = () => {
     setFormData({
       ...formData,
       subRecipes: [
@@ -117,12 +117,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         },
       ],
     });
-
-    console.log(formData);
   };
 
   const handleDelete = (i: number) => {
-    console.log(i);
     const deleteSubRecipe = [...formData.subRecipes];
     deleteSubRecipe.splice(i, 1);
     setFormData({ ...formData, subRecipes: deleteSubRecipe });
@@ -207,7 +204,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         ))}
       </TextField>
 
-      {formData.subRecipes.map((subRecipe, index) => (
+      {formData.subRecipes.map((_subRecipe, index) => (
         <>
           <SubRecipeForm
             index={index}

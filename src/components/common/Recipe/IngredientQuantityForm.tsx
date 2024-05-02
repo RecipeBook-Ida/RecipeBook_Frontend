@@ -1,10 +1,13 @@
 import { MenuItem, TextField } from "@mui/material";
 import { useState } from "react";
 import { Ingredient } from "../../../types/Ingredient";
+import { RecipePostForm } from "../../../types/RecipeType";
 
 interface IngredientQuantityFormProps {
-  //setIngredient: (data: IngredientQuantityPost) => void;
   ingredients: Ingredient[];
+  index: number;
+  formData: RecipePostForm;
+  setFormData: React.Dispatch<React.SetStateAction<RecipePostForm>>;
 }
 
 const IngredientQuantityForm: React.FC<IngredientQuantityFormProps> = ({
