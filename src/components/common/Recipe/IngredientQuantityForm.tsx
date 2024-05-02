@@ -1,64 +1,101 @@
-import { Box, MenuItem, TextField } from "@mui/material";
+import { MenuItem, TextField } from "@mui/material";
 import { useState } from "react";
-import { IngredientQuantityPost } from "../../../types/Ingredient";
+import { Ingredient } from "../../../types/Ingredient";
 
 interface IngredientQuantityFormProps {
-  setformData: (data: IngredientQuantityPost) => void;
+  //setIngredient: (data: IngredientQuantityPost) => void;
+  ingredients: Ingredient[];
 }
 
 const IngredientQuantityForm: React.FC<IngredientQuantityFormProps> = ({
-  setformData,
+  //setIngredient,
+  ingredients,
 }) => {
   const unit = ["stk", "ss", "ts", "krm", "dl", "l", "g", "kg", "mg"];
-  const [ingredientQuantity, setIngredientQuantity] = useState({
+  const [formData, setFormData] = useState({
     quantity: 0,
     unit: "",
     ingredientId: 0,
   });
 
+  const [formErrors, setFormErrors] = useState({
+    quantity: false,
+    unit: false,
+    ingredientId: false,
+  });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setIngredientQuantity({
-      ...ingredientQuantity,
+    setFormData({
+      ...formData,
       [name]: value,
     });
-    setformData(ingredientQuantity);
+    //setIngredient(formData);
+
+    if (e.target.validity.valid) {
+      setFormErrors({
+        ...formErrors,
+        [name]: false,
+      });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        [name]: true,
+      });
+    }
+
+    console.log(formData);
+    console.log(formErrors);
   };
 
   return (
-    <Box
-      component="form"
-      sx={{
-        "& .MuiTextField-root": { m: 1, width: "25ch" },
-      }}
-      noValidate
-      autoComplete="off"
-    >
-      <div className=" ">
-        <TextField
-          id="quantity"
-          label="Mengde"
-          type="number"
-          variant="outlined"
-          value={ingredientQuantity.quantity}
-          onChange={handleChange}
-        />
-        <TextField
-          id="unit"
-          label="Enhet"
-          variant="outlined"
-          select
-          value={ingredientQuantity.unit}
-          onChange={handleChange}
-        >
-          {unit.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
-            </MenuItem>
-          ))}
-        </TextField>
-      </div>
-    </Box>
+    <div className=" ">
+      <TextField
+        required
+        name="ingredientId"
+        label="Ingrediens"
+        select
+        variant="outlined"
+        value={formData.ingredientId}
+        onChange={handleChange}
+        error={formErrors.ingredientId}
+        helperText={formErrors.ingredientId && "Fill"}
+      >
+        {ingredients.map((ingredient) => (
+          <MenuItem key={ingredient.id} value={ingredient.id}>
+            {ingredient.name}
+          </MenuItem>
+        ))}
+      </TextField>
+      <TextField
+        required
+        name="quantity"
+        label="Mengde"
+        type="number"
+        variant="outlined"
+        value={formData.quantity}
+        onChange={handleChange}
+        error={formErrors.quantity}
+        helperText={formErrors.quantity && "Fill"}
+      />
+      <TextField
+        required
+        name="unit"
+        label="Enhet"
+        variant="outlined"
+        select
+        value={formData.unit}
+        onChange={handleChange}
+        error={formErrors.unit}
+        helperText={formErrors.unit && "Fill"}
+      >
+        {unit.map((option) => (
+          <MenuItem key={option} value={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </TextField>
+    </div>
   );
 };
 export default IngredientQuantityForm;
