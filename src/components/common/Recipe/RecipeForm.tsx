@@ -3,7 +3,7 @@ import { User, dummyUser } from "../../../types/UserType";
 import { useEffect, useState } from "react";
 import SubRecipeForm from "./SubRecipeForm";
 import { usePostRecipe } from "../../../services/recipe/postRecipe";
-import { RecipePost } from "../../../types/RecipeType";
+import { RecipePost, RecipePostForm } from "../../../types/RecipeType";
 import { useGetAllIngredients } from "../../../services/ingredient/getIngredient";
 import { Ingredient } from "../../../types/Ingredient";
 
@@ -24,7 +24,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
 
   const user: User = dummyUser;
   const postRecipe = usePostRecipe();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RecipePostForm>({
     title: "",
     description: "",
     cooktime: 0,
@@ -210,8 +210,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
       {formData.subRecipes.map((subRecipe, index) => (
         <>
           <SubRecipeForm
-            /*     formData={formData}
-            setFormData={setFormData} */
+            index={index}
+            formData={formData}
+            setFormData={setFormData}
             ingredients={ingredients}
           ></SubRecipeForm>
           <Button onClick={() => handleDelete(index)}>Delete</Button>

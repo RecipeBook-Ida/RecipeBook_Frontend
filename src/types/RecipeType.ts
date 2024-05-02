@@ -24,6 +24,17 @@ export type RecipeList = {
   type: string;
   portion: number;
 };
+export type RecipePostForm = {
+  title: string;
+  description: string;
+  cooktime: number;
+  image: string;
+  cuisine: string;
+  type: string;
+  portion: number;
+  subRecipes: SubRecipePost[];
+  appUser: number;
+};
 
 export type RecipePost = {
   title: string;
@@ -33,7 +44,7 @@ export type RecipePost = {
   cuisine: string;
   type: string;
   portion: number;
-  subRecipeIds: number[];
+  subRecipeIds?: number[];
   appUser: number;
 };
 

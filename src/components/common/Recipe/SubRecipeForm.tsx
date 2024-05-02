@@ -1,20 +1,23 @@
 import { TextField } from "@mui/material";
 import { useState } from "react";
-import { usePostSubRecipe } from "../../../services/recipe/postSubRecipe";
 import IngredientQuantityForm from "./IngredientQuantityForm";
-import { SubRecipePost } from "../../../types/RecipeType";
 import { Ingredient } from "../../../types/Ingredient";
+import { RecipePostForm } from "../../../types/RecipeType";
 
 interface SubRecipeFormProps {
   ingredients: Ingredient[];
-  /*   formData: any;
-  setFormData:  (formData: any[]) => void; */
+  index: number;
+  formData: RecipePostForm;
+  setFormData: React.Dispatch<React.SetStateAction<RecipePostForm>>;
 }
 
-const SubRecipeForm: React.FC<SubRecipeFormProps> = ({ ingredients }) => {
-/*   const postSubRecipe = usePostSubRecipe();
- */
-  const [formData, setFormData] = useState<SubRecipePost>({
+const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
+  ingredients,
+  index,
+  formData,
+  setFormData,
+}) => {
+  /*   const [formData, setFormData] = useState<SubRecipePost>({
     title: "",
     instructions: "",
     ingredients: [
@@ -24,7 +27,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({ ingredients }) => {
         ingredientId: 0,
       },
     ],
-  });
+  }); */
 
   const [formErrors, setFormErrors] = useState({
     title: false,
@@ -40,9 +43,14 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({ ingredients }) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const subRecipe = [...formData.subRecipes];
+    subRecipe[index] = {
+      ...subRecipe[index],
+      [name]: value,
+    };
     setFormData({
       ...formData,
-      [name]: value,
+      subRecipes: subRecipe,
     });
 
     if (e.target.validity.valid) {
@@ -65,7 +73,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({ ingredients }) => {
         name="title"
         label="Title"
         variant="outlined"
-        value={formData.title}
+        value={formData.subRecipes[index].title}
         onChange={handleChange}
         error={formErrors.title}
         helperText={formErrors.title && "Fill"}
@@ -76,7 +84,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({ ingredients }) => {
         multiline
         fullWidth
         maxRows={4}
-        value={formData.instructions}
+        value={formData.subRecipes[index].instructions}
         onChange={handleChange}
         helperText={formErrors.instruction && "Fill"}
       />
