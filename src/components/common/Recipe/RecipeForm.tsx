@@ -21,9 +21,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
 
   const type = ["Frokost", "Lunsj", "Middag", "Dessert", "Annet"];
   const cuisine = ["Italiensk", "Asiatisk", "Vegansk", "Vegetariansk", "Annet"];
-
   const user: User = dummyUser;
   const postRecipe = usePostRecipe();
+
   const [formData, setFormData] = useState<RecipePostForm>({
     title: "",
     description: "",
@@ -32,19 +32,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     cuisine: "",
     type: "",
     portion: 0,
-    subRecipes: [
-      {
-        title: "",
-        instructions: "",
-        ingredients: [
-          {
-            quantity: 0,
-            unit: "",
-            ingredientId: 0,
-          },
-        ],
-      },
-    ],
+    subRecipes: [],
     appUser: user.id,
   });
   const [formErrors, setFormErrors] = useState({
@@ -208,8 +196,8 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         <>
           <SubRecipeForm
             index={index}
-            formData={formData}
-            setFormData={setFormData}
+            recipeFormData={formData}
+            setRecipeFormData={setFormData}
             ingredients={ingredients}
           ></SubRecipeForm>
           <Button onClick={() => handleDelete(index)}>Delete</Button>

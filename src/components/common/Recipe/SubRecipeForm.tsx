@@ -1,33 +1,27 @@
 import { Button, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import IngredientQuantityForm from "./IngredientQuantityForm";
 import { Ingredient } from "../../../types/Ingredient";
-import { RecipePostForm } from "../../../types/RecipeType";
+import { RecipePostForm, SubRecipePost } from "../../../types/RecipeType";
 
 interface SubRecipeFormProps {
   ingredients: Ingredient[];
   index: number;
-  formData: RecipePostForm;
-  setFormData: React.Dispatch<React.SetStateAction<RecipePostForm>>;
+  recipeFormData: RecipePostForm;
+  setRecipeFormData: React.Dispatch<React.SetStateAction<RecipePostForm>>;
 }
 
 const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
   ingredients,
   index,
-  formData,
-  setFormData,
+  recipeFormData,
+  setRecipeFormData,
 }) => {
-  /*   const [formData, setFormData] = useState<SubRecipePost>({
+  const [formData, setFormData] = useState<SubRecipePost>({
     title: "",
     instructions: "",
-    ingredients: [
-      {
-        quantity: 0,
-        unit: "",
-        ingredientId: 0,
-      },
-    ],
-  }); */
+    ingredients: [],
+  });
 
   const [formErrors, setFormErrors] = useState({
     title: false,
@@ -41,16 +35,29 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
     ],
   });
 
+  useEffect(() => {
+    const updatedSubRecipe = [...recipeFormData.subRecipes];
+    updatedSubRecipe[index] = {
+      ...formData,
+    };
+    setRecipeFormData({
+      ...recipeFormData,
+      subRecipes: updatedSubRecipe,
+    });
+  }, [formData]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const subRecipe = [...formData.subRecipes];
-    subRecipe[index] = {
-      ...subRecipe[index],
+    const updatedSubRecipe = [...recipeFormData.subRecipes];
+    updatedSubRecipe[index] = {
+      ...formData,
       [name]: value,
     };
-    setFormData({
-      ...formData,
-      subRecipes: subRecipe,
+    setFormData(updatedSubRecipe[index]);
+
+    setRecipeFormData({
+      ...recipeFormData,
+      subRecipes: updatedSubRecipe,
     });
 
     if (e.target.validity.valid) {
@@ -67,8 +74,8 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
   };
 
   const handleAddIngredient = () => {
-    const subRecipes = [...formData.subRecipes];
-    subRecipes[index].ingredients.push({
+    const ingredients = [...formData.ingredients];
+    ingredients.push({
       quantity: 0,
       unit: "",
       ingredientId: 0,
@@ -76,16 +83,16 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
 
     setFormData({
       ...formData,
-      subRecipes: subRecipes,
+      ingredients: ingredients,
     });
 
     console.log(formData);
   };
 
   const handleDelete = (i: number) => {
-    const deleteIngredient = [...formData.subRecipes];
-    deleteIngredient[index].ingredients.splice(i, 1);
-    setFormData({ ...formData, subRecipes: deleteIngredient });
+    const deleteIngredient = [...formData.ingredients];
+    deleteIngredient.splice(i, 1);
+    setFormData({ ...formData, ingredients: deleteIngredient });
   };
 
   return (
@@ -95,7 +102,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
         name="title"
         label="Title"
         variant="outlined"
-        value={formData.subRecipes[index].title}
+        value={formData.title}
         onChange={handleChange}
         error={formErrors.title}
         helperText={formErrors.title && "Fill"}
@@ -106,17 +113,17 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
         multiline
         fullWidth
         maxRows={4}
-        value={formData.subRecipes[index].instructions}
+        value={formData.instructions}
         onChange={handleChange}
         helperText={formErrors.instruction && "Fill"}
       />
 
-      {formData.subRecipes[index].ingredients.map((_singredient, index) => (
+      {formData.ingredients.map((_singredient, index) => (
         <>
           <IngredientQuantityForm
             index={index}
-            formData={formData}
-            setFormData={setFormData}
+            subRecipeformData={formData}
+            setSubRecipeFormData={setFormData}
             ingredients={ingredients}
           ></IngredientQuantityForm>
 

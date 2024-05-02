@@ -1,21 +1,23 @@
 import { MenuItem, TextField } from "@mui/material";
 import { useState } from "react";
-import { Ingredient } from "../../../types/Ingredient";
-import { RecipePostForm } from "../../../types/RecipeType";
+import { Ingredient, IngredientQuantityPost } from "../../../types/Ingredient";
+import { SubRecipePost } from "../../../types/RecipeType";
 
 interface IngredientQuantityFormProps {
   ingredients: Ingredient[];
   index: number;
-  formData: RecipePostForm;
-  setFormData: React.Dispatch<React.SetStateAction<RecipePostForm>>;
+  subRecipeformData: SubRecipePost;
+  setSubRecipeFormData: React.Dispatch<React.SetStateAction<SubRecipePost>>;
 }
 
 const IngredientQuantityForm: React.FC<IngredientQuantityFormProps> = ({
-  //setIngredient,
+  index,
   ingredients,
+  subRecipeformData,
+  setSubRecipeFormData,
 }) => {
   const unit = ["stk", "ss", "ts", "krm", "dl", "l", "g", "kg", "mg"];
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<IngredientQuantityPost>({
     quantity: 0,
     unit: "",
     ingredientId: 0,
@@ -29,11 +31,17 @@ const IngredientQuantityForm: React.FC<IngredientQuantityFormProps> = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
+    const updatedIngredient = [...subRecipeformData.ingredients];
+    updatedIngredient[index] = {
       ...formData,
       [name]: value,
+    };
+    setFormData(updatedIngredient[index]);
+
+    setSubRecipeFormData({
+      ...subRecipeformData,
+      ingredients: updatedIngredient,
     });
-    //setIngredient(formData);
 
     if (e.target.validity.valid) {
       setFormErrors({
