@@ -12,8 +12,8 @@ interface SubRecipeFormProps {
 }
 
 const SubRecipeForm: React.FC<SubRecipeFormProps> = ({ ingredients }) => {
-  const postSubRecipe = usePostSubRecipe();
-
+/*   const postSubRecipe = usePostSubRecipe();
+ */
   const [formData, setFormData] = useState<SubRecipePost>({
     title: "",
     instructions: "",
@@ -44,10 +44,18 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({ ingredients }) => {
       ...formData,
       [name]: value,
     });
-  };
 
-  const handleCreateRecipeClick = async () => {
-    await postSubRecipe.mutateAsync(formData);
+    if (e.target.validity.valid) {
+      setFormErrors({
+        ...formErrors,
+        [name]: false,
+      });
+    } else {
+      setFormErrors({
+        ...formErrors,
+        [name]: true,
+      });
+    }
   };
 
   return (
@@ -60,6 +68,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({ ingredients }) => {
         value={formData.title}
         onChange={handleChange}
         error={formErrors.title}
+        helperText={formErrors.title && "Fill"}
       />
       <TextField
         id="instructions"
@@ -69,6 +78,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({ ingredients }) => {
         maxRows={4}
         value={formData.instructions}
         onChange={handleChange}
+        helperText={formErrors.instruction && "Fill"}
       />
 
       <IngredientQuantityForm
