@@ -1,15 +1,20 @@
-import { Box, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { useState } from "react";
 import { usePostSubRecipe } from "../../../services/recipe/postSubRecipe";
 import IngredientQuantityForm from "./IngredientQuantityForm";
 import { SubRecipePost } from "../../../types/RecipeType";
+import { Ingredient } from "../../../types/Ingredient";
 
-interface SubRecipeFormProps {}
+interface SubRecipeFormProps {
+  ingredients: Ingredient[];
+  /*   formData: any;
+  setFormData:  (formData: any[]) => void; */
+}
 
-const SubRecipeForm: React.FC<SubRecipeFormProps> = ({}) => {
+const SubRecipeForm: React.FC<SubRecipeFormProps> = ({ ingredients }) => {
   const postSubRecipe = usePostSubRecipe();
 
-  const [subRecipe, setNewSubRecipe] = useState<SubRecipePost>({
+  const [formData, setFormData] = useState<SubRecipePost>({
     title: "",
     instructions: "",
     ingredients: [
@@ -21,48 +26,56 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({}) => {
     ],
   });
 
+  const [formErrors, setFormErrors] = useState({
+    title: false,
+    instruction: false,
+    ingredients: [
+      {
+        quantity: false,
+        unit: false,
+        ingredientId: false,
+      },
+    ],
+  });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setNewSubRecipe({
-      ...subRecipe,
+    setFormData({
+      ...formData,
       [name]: value,
     });
   };
 
   const handleCreateRecipeClick = async () => {
-    await postSubRecipe.mutateAsync(subRecipe);
+    await postSubRecipe.mutateAsync(formData);
   };
 
   return (
-    <Box
-      component="form"
-      sx={{
-        "& .MuiTextField-root": { m: 1, width: "25ch" },
-      }}
-      noValidate
-      autoComplete="off"
-    >
-      <div className=" ">
-        <TextField
-          id="subTitle"
-          label="Tittel"
-          variant="outlined"
-          value={subRecipe.title}
-          onChange={handleChange}
-        />
-        <TextField
-          id="instructions"
-          label="Instruksjoner"
-          multiline
-          fullWidth
-          maxRows={4}
-          value={subRecipe.instructions}
-          onChange={handleChange}
-        />
+    <div className=" ">
+      <TextField
+        required
+        name="title"
+        label="Title"
+        variant="outlined"
+        value={formData.title}
+        onChange={handleChange}
+        error={formErrors.title}
+      />
+      <TextField
+        id="instructions"
+        label="Instruksjoner"
+        multiline
+        fullWidth
+        maxRows={4}
+        value={formData.instructions}
+        onChange={handleChange}
+      />
 
-        <IngredientQuantityForm setformData={subRecipe.ingredients}></IngredientQuantityForm>
-      </div>
-    </Box>
+      <IngredientQuantityForm
+        ingredients={ingredients}
+        //setIngredient={setFormData}
+      ></IngredientQuantityForm>
+    </div>
   );
 };
 export default SubRecipeForm;
