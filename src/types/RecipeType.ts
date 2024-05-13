@@ -25,6 +25,7 @@ export type RecipeList = {
   portion: number;
 };
 export type RecipePostForm = {
+  [key: string]: string | number | SubRecipePost[];
   title: string;
   description: string;
   cooktime: number;
@@ -56,6 +57,7 @@ export type SubRecipe = {
 };
 
 export type SubRecipePost = {
+  [key: string]: string | number | IngredientQuantityPost[];
   title: string;
   instructions: string;
   ingredients: IngredientQuantityPost[];

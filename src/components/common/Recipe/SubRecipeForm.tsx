@@ -9,6 +9,7 @@ interface SubRecipeFormProps {
   index: number;
   recipeFormData: RecipePostForm;
   setRecipeFormData: React.Dispatch<React.SetStateAction<RecipePostForm>>;
+  submitClicked: boolean;
 }
 
 const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
@@ -16,23 +17,29 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
   index,
   recipeFormData,
   setRecipeFormData,
+  submitClicked,
 }) => {
+  useEffect(() => {
+    if (submitClicked) {
+      const errors: { [key: string]: boolean } = {};
+      Object.keys(formErrors).forEach((key) => {
+        if (!formData[key]) {
+          errors[key] = true;
+        }
+      });
+      setFormErrors(errors);
+    }
+  }, [submitClicked]);
+
   const [formData, setFormData] = useState<SubRecipePost>({
     title: "",
     instructions: "",
     ingredients: [],
   });
 
-  const [formErrors, setFormErrors] = useState({
+  const [formErrors, setFormErrors] = useState<{ [key: string]: boolean }>({
     title: false,
     instruction: false,
-    ingredients: [
-      {
-        quantity: false,
-        unit: false,
-        ingredientId: false,
-      },
-    ],
   });
 
   useEffect(() => {
@@ -115,19 +122,27 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
         maxRows={4}
         value={formData.instructions}
         onChange={handleChange}
+        error={formErrors.instruction}
         helperText={formErrors.instruction && "Fill"}
       />
 
       {formData.ingredients.map((_singredient, index) => (
         <>
           <IngredientQuantityForm
+            key={`ingredient_${index}`}
             index={index}
             subRecipeformData={formData}
             setSubRecipeFormData={setFormData}
             ingredients={ingredients}
+            submitClicked={submitClicked}
           ></IngredientQuantityForm>
 
-          <Button onClick={() => handleDelete(index)}>Delete</Button>
+          <Button
+            key={`ingredient_deleteButton_${index}`}
+            onClick={() => handleDelete(index)}
+          >
+            Delete
+          </Button>
         </>
       ))}
 

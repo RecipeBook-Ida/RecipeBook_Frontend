@@ -1,23 +1,18 @@
-import { Box, Button, MenuItem, TextField } from "@mui/material";
+import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import { User, dummyUser } from "../../../types/UserType";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SubRecipeForm from "./SubRecipeForm";
 import { usePostRecipe } from "../../../services/recipe/postRecipe";
 import { RecipePost, RecipePostForm } from "../../../types/RecipeType";
-import { useGetAllIngredients } from "../../../services/ingredient/getIngredient";
-import { Ingredient } from "../../../types/Ingredient";
+import { dummyIngredients } from "../../../types/Ingredient";
+import { usePostSubRecipe } from "../../../services/recipe/postSubRecipe";
 
 interface RecipeFormProps {}
 
 const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
-  const ingredientHook = useGetAllIngredients();
-  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-
-  useEffect(() => {
-    if (!ingredientHook.isLoading && ingredientHook.data) {
-      setIngredients([...(ingredientHook.data as Ingredient[])]);
-    }
-  }, [ingredientHook.data, ingredientHook.isLoading, ingredientHook.isStale]);
+  const [submitClicked, setSubmitClicked] = useState(false);
+  const postSubRecipe = usePostSubRecipe();
+  const ingredients = dummyIngredients;
 
   const type = ["Frokost", "Lunsj", "Middag", "Dessert", "Annet"];
   const cuisine = ["Italiensk", "Asiatisk", "Vegansk", "Vegetariansk", "Annet"];
@@ -35,7 +30,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     subRecipes: [],
     appUser: user.id,
   });
-  const [formErrors, setFormErrors] = useState({
+  const [formErrors, setFormErrors] = useState<{ [key: string]: boolean }>({
     title: false,
     description: false,
     cooktime: false,
@@ -43,7 +38,6 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     cuisine: false,
     type: false,
     portion: false,
-    subRecipes: false,
     appUser: false,
   });
 
@@ -69,9 +63,17 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    setSubmitClicked(true);
     if (e.target.checkValidity()) {
       alert("Oppskrift laget!");
-      //const ids = formData.subRecipes.map((subRecipe) => subRecipe.title);
+
+      const subRecipePromises = formData.subRecipes.map(async (subRecipe) => {
+        const result = await postSubRecipe.mutateAsync(subRecipe);
+        return result.id;
+      });
+
+      const subRecipeIds = await Promise.all(subRecipePromises);
+
       const createRecipe: RecipePost = {
         title: formData.title,
         description: formData.description,
@@ -80,11 +82,22 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         cuisine: formData.cuisine,
         type: formData.type,
         portion: formData.portion,
-        subRecipeIds: [1, 2],
+        subRecipeIds: subRecipeIds,
         appUser: user.id,
       };
       await postRecipe.mutateAsync(createRecipe);
-    } else alert("Venligst fyll ut alle felt.");
+    } else {
+      const errors: { [key: string]: boolean } = {};
+      Object.keys(formErrors).forEach((key) => {
+        if (!formData[key]) {
+          errors[key] = true;
+        }
+      });
+
+      setFormErrors(errors);
+
+      //alert("Venligst fyll ut alle felt.");
+    }
   };
 
   const handleAddSubRecipe = () => {
@@ -113,10 +126,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     setFormData({ ...formData, subRecipes: deleteSubRecipe });
   };
 
-  if (ingredientHook.isPending || !ingredients) return "Loading...";
-
-  if (ingredientHook.error)
-    return "An error has occurred: " + ingredientHook.error.message;
+  const requiredHelperText = "Felt er nødvendig, full ut";
 
   return (
     <Box
@@ -135,7 +145,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         value={formData.title}
         onChange={handleChange}
         error={formErrors.title}
-        helperText={formErrors.title && "Fill"}
+        helperText={formErrors.title && requiredHelperText}
         required
       />
       <TextField
@@ -148,6 +158,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         value={formData.description}
         onChange={handleChange}
         error={formErrors.description}
+        helperText={formErrors.description && requiredHelperText}
       />
       <TextField
         required
@@ -158,49 +169,70 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         value={formData.cooktime}
         onChange={handleChange}
         error={formErrors.cooktime}
+        helperText={formErrors.cooktime && requiredHelperText}
       />
       <TextField
         required
-        name="type"
-        label="Type"
+        name="portion"
+        label="Porsjon"
+        type="number"
         variant="outlined"
-        select
-        value={formData.type}
+        value={formData.portion}
         onChange={handleChange}
-        error={formErrors.type}
-      >
-        {type.map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
-        required
-        name="cuisine"
-        label="Matrett"
-        variant="outlined"
-        select
-        value={formData.cuisine}
-        onChange={handleChange}
-        error={formErrors.cuisine}
-      >
-        {cuisine.map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </TextField>
+        error={formErrors.portion}
+        helperText={formErrors.portion && requiredHelperText}
+      />
+      <Autocomplete
+        id="type"
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            required
+            name="type"
+            label="Type"
+            value={formData.type}
+            onChange={handleChange}
+            error={formErrors.type}
+            helperText={formErrors.type && requiredHelperText}
+          />
+        )}
+        options={type}
+      ></Autocomplete>
+
+      <Autocomplete
+        id="cuisine"
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            required
+            name="cuisine"
+            label="Matrett"
+            variant="outlined"
+            value={formData.cuisine}
+            onChange={handleChange}
+            error={formErrors.cuisine}
+            helperText={formErrors.cuisine && requiredHelperText}
+          />
+        )}
+        options={cuisine}
+      ></Autocomplete>
 
       {formData.subRecipes.map((_subRecipe, index) => (
         <>
           <SubRecipeForm
+            key={`subRecipe_${index}`}
             index={index}
             recipeFormData={formData}
             setRecipeFormData={setFormData}
             ingredients={ingredients}
+            submitClicked={submitClicked}
           ></SubRecipeForm>
-          <Button onClick={() => handleDelete(index)}>Delete</Button>
+          <Button
+            key={`subRecipe_deleteButton_${index}`}
+            onClick={() => handleDelete(index)}
+          >
+            Delete
+          </Button>
         </>
       ))}
 
