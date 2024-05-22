@@ -45,7 +45,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
       ...formData,
       [name]: value,
     });
-  };
+      };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -148,17 +148,8 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         { number: true },
         posNumberValidator
       )}
-      <Autocomplete
-        id="type"
-        renderInput={(params) => renderTextField("Type", "type")}
-        options={type}
-      ></Autocomplete>
-
-      <Autocomplete
-        id="cuisine"
-        renderInput={(params) => renderTextField("Matrett", "cuisine")}
-        options={cuisine}
-      ></Autocomplete>
+      {renderTextField("type", "type", { options: type })}
+      {renderTextField("cuisine", "cuisine", { options: cuisine })}
 
       {formData.subRecipes.map((_subRecipe, index) => (
         <>

@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
 interface ValidatedTextFieldProps {
@@ -8,6 +8,7 @@ interface ValidatedTextFieldProps {
   number?: true;
   props?: any;
   submit?: boolean;
+  options?: any[];
 }
 
 const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
@@ -17,6 +18,7 @@ const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
   number,
   props,
   submit,
+  options,
 }) => {
   const [value, setValue] = useState(number ? 0 : "");
   const [error, setError] = useState(false);
@@ -29,20 +31,48 @@ const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
     }
   }, [submit]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = number ? +e.target.value : e.target.value;
+  const handleChange = (value: string) => {
+    const newValue = number ? +value : value;
     const errorMessage = validator(newValue);
     setValue(newValue);
     setError(errorMessage);
-    onChange(newValue, !errorMessage);
+    onChange(value, !errorMessage);
   };
+
+  if (options) {
+    return (
+      <>
+        <Autocomplete
+          id={label}
+          value={value !== "" ? value : null}
+          onChange={(e, newValue: string | null) => {
+            handleChange(newValue ? newValue : "");
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...props}
+              {...params}
+              label={label}
+              value={value}
+              error={!!error}
+              helperText={error}
+              variant="outlined"
+              required
+              type={number && "number"}
+            />
+          )}
+          options={options}
+        ></Autocomplete>
+      </>
+    );
+  }
 
   return (
     <TextField
       {...props}
       label={label}
       value={value}
-      onChange={handleChange}
+      onChange={(e) => handleChange(e.target.value)}
       error={!!error}
       helperText={error}
       variant="outlined"
