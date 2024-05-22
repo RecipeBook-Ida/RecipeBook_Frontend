@@ -1,11 +1,20 @@
-import { Autocomplete, Box, Button, TextField } from "@mui/material";
+import { Autocomplete, Box, Button } from "@mui/material";
 import { User, dummyUser } from "../../../types/UserType";
 import { useState } from "react";
 import SubRecipeForm from "./SubRecipeForm";
 import { usePostRecipe } from "../../../services/recipe/postRecipe";
-import { RecipePost, RecipePostForm } from "../../../types/RecipeType";
+import {
+  RecipePost,
+  RecipePostForm,
+  SubRecipePost,
+} from "../../../types/RecipeType";
 import { dummyIngredients } from "../../../types/Ingredient";
 import { usePostSubRecipe } from "../../../services/recipe/postSubRecipe";
+import ValidatedTextField from "../inputField/ValidatedTextField";
+import {
+  posNumberValidator,
+  requiredValidator,
+} from "../../../utils/textFieldValidators";
 
 interface RecipeFormProps {}
 
@@ -30,35 +39,12 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     subRecipes: [],
     appUser: user.id,
   });
-  const [formErrors, setFormErrors] = useState<{ [key: string]: boolean }>({
-    title: false,
-    description: false,
-    cooktime: false,
-    image: false,
-    cuisine: false,
-    type: false,
-    portion: false,
-    appUser: false,
-  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleChange = (name: string, value: any) => {
     setFormData({
       ...formData,
       [name]: value,
     });
-
-    if (e.target.validity.valid) {
-      setFormErrors({
-        ...formErrors,
-        [name]: false,
-      });
-    } else {
-      setFormErrors({
-        ...formErrors,
-        [name]: true,
-      });
-    }
   };
 
   const handleSubmit = async (e: any) => {
@@ -85,38 +71,22 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         subRecipeIds: subRecipeIds,
         appUser: user.id,
       };
+      console.log(createRecipe);
       await postRecipe.mutateAsync(createRecipe);
-    } else {
-      const errors: { [key: string]: boolean } = {};
-      Object.keys(formErrors).forEach((key) => {
-        if (!formData[key]) {
-          errors[key] = true;
-        }
-      });
-
-      setFormErrors(errors);
-
-      //alert("Venligst fyll ut alle felt.");
     }
   };
 
   const handleAddSubRecipe = () => {
+    const subRecipes = [...formData.subRecipes];
+    subRecipes.push({
+      title: "",
+      instructions: "",
+      ingredients: [],
+    });
+
     setFormData({
       ...formData,
-      subRecipes: [
-        ...formData.subRecipes,
-        {
-          title: "",
-          instructions: "",
-          ingredients: [
-            {
-              quantity: 0,
-              unit: "",
-              ingredientId: 0,
-            },
-          ],
-        },
-      ],
+      subRecipes: subRecipes,
     });
   };
 
@@ -126,7 +96,35 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     setFormData({ ...formData, subRecipes: deleteSubRecipe });
   };
 
-  const requiredHelperText = "Felt er nødvendig, full ut";
+  const updateSubRecipeList = (
+    updatedSubRecipe: SubRecipePost,
+    index: number
+  ) => {
+    const subRecipes = [...formData.subRecipes];
+    subRecipes[index] = updatedSubRecipe;
+
+    setFormData((prevState) => ({
+      ...prevState,
+      subRecipes: subRecipes,
+    }));
+  };
+
+  const renderTextField = (
+    label: string,
+    name: string,
+    props?: any,
+    validator: any = requiredValidator
+  ) => {
+    return (
+      <ValidatedTextField
+        {...props}
+        submit={submitClicked}
+        label={label}
+        validator={validator}
+        onChange={(newValue) => handleChange(name, newValue)}
+      />
+    );
+  };
 
   return (
     <Box
@@ -138,82 +136,27 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
       autoComplete="off"
       onSubmit={handleSubmit}
     >
-      <TextField
-        name="title"
-        label="Tittel"
-        variant="outlined"
-        value={formData.title}
-        onChange={handleChange}
-        error={formErrors.title}
-        helperText={formErrors.title && requiredHelperText}
-        required
-      />
-      <TextField
-        required
-        name="description"
-        label="Beskrivelse"
-        multiline
-        fullWidth
-        maxRows={4}
-        value={formData.description}
-        onChange={handleChange}
-        error={formErrors.description}
-        helperText={formErrors.description && requiredHelperText}
-      />
-      <TextField
-        required
-        name="cooktime"
-        label="Tid"
-        type="number"
-        variant="outlined"
-        value={formData.cooktime}
-        onChange={handleChange}
-        error={formErrors.cooktime}
-        helperText={formErrors.cooktime && requiredHelperText}
-      />
-      <TextField
-        required
-        name="portion"
-        label="Porsjon"
-        type="number"
-        variant="outlined"
-        value={formData.portion}
-        onChange={handleChange}
-        error={formErrors.portion}
-        helperText={formErrors.portion && requiredHelperText}
-      />
+      {renderTextField("Tittel", "title")}
+      {renderTextField("Beskrivelse", "description", {
+        multiline: true,
+        fullWidth: true,
+      })}
+      {renderTextField("Tid", "cooktime", { number: true }, posNumberValidator)}
+      {renderTextField(
+        "Porsjon",
+        "portion",
+        { number: true },
+        posNumberValidator
+      )}
       <Autocomplete
         id="type"
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            required
-            name="type"
-            label="Type"
-            value={formData.type}
-            onChange={handleChange}
-            error={formErrors.type}
-            helperText={formErrors.type && requiredHelperText}
-          />
-        )}
+        renderInput={(params) => renderTextField("Type", "type")}
         options={type}
       ></Autocomplete>
 
       <Autocomplete
         id="cuisine"
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            required
-            name="cuisine"
-            label="Matrett"
-            variant="outlined"
-            value={formData.cuisine}
-            onChange={handleChange}
-            error={formErrors.cuisine}
-            helperText={formErrors.cuisine && requiredHelperText}
-          />
-        )}
+        renderInput={(params) => renderTextField("Matrett", "cuisine")}
         options={cuisine}
       ></Autocomplete>
 
@@ -222,8 +165,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
           <SubRecipeForm
             key={`subRecipe_${index}`}
             index={index}
-            recipeFormData={formData}
-            setRecipeFormData={setFormData}
+            updateSubRecipeForm={updateSubRecipeList}
             ingredients={ingredients}
             submitClicked={submitClicked}
           ></SubRecipeForm>

@@ -1,83 +1,36 @@
-import { Button, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Button } from "@mui/material";
+import { useRef, useState } from "react";
 import IngredientQuantityForm from "./IngredientQuantityForm";
-import { Ingredient } from "../../../types/Ingredient";
-import { RecipePostForm, SubRecipePost } from "../../../types/RecipeType";
+import { Ingredient, IngredientQuantityPost } from "../../../types/Ingredient";
+import { SubRecipePost } from "../../../types/RecipeType";
+import ValidatedTextField from "../inputField/ValidatedTextField";
+import { requiredValidator } from "../../../utils/textFieldValidators";
 
 interface SubRecipeFormProps {
   ingredients: Ingredient[];
   index: number;
-  recipeFormData: RecipePostForm;
-  setRecipeFormData: React.Dispatch<React.SetStateAction<RecipePostForm>>;
   submitClicked: boolean;
+  updateSubRecipeForm: (updateSubRecipe: SubRecipePost, index: number) => void;
 }
 
 const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
   ingredients,
   index,
-  recipeFormData,
-  setRecipeFormData,
   submitClicked,
+  updateSubRecipeForm,
 }) => {
-  useEffect(() => {
-    if (submitClicked) {
-      const errors: { [key: string]: boolean } = {};
-      Object.keys(formErrors).forEach((key) => {
-        if (!formData[key]) {
-          errors[key] = true;
-        }
-      });
-      setFormErrors(errors);
-    }
-  }, [submitClicked]);
-
   const [formData, setFormData] = useState<SubRecipePost>({
     title: "",
     instructions: "",
     ingredients: [],
   });
 
-  const [formErrors, setFormErrors] = useState<{ [key: string]: boolean }>({
-    title: false,
-    instruction: false,
-  });
-
-  useEffect(() => {
-    const updatedSubRecipe = [...recipeFormData.subRecipes];
-    updatedSubRecipe[index] = {
-      ...formData,
-    };
-    setRecipeFormData({
-      ...recipeFormData,
-      subRecipes: updatedSubRecipe,
-    });
-  }, [formData]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const updatedSubRecipe = [...recipeFormData.subRecipes];
-    updatedSubRecipe[index] = {
+  const handleChange = (name: string, value: any) => {
+    setFormData({
       ...formData,
       [name]: value,
-    };
-    setFormData(updatedSubRecipe[index]);
-
-    setRecipeFormData({
-      ...recipeFormData,
-      subRecipes: updatedSubRecipe,
     });
-
-    if (e.target.validity.valid) {
-      setFormErrors({
-        ...formErrors,
-        [name]: false,
-      });
-    } else {
-      setFormErrors({
-        ...formErrors,
-        [name]: true,
-      });
-    }
+    updateSubRecipeForm(formData, index);
   };
 
   const handleAddIngredient = () => {
@@ -92,8 +45,6 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
       ...formData,
       ingredients: ingredients,
     });
-
-    console.log(formData);
   };
 
   const handleDelete = (i: number) => {
@@ -102,49 +53,56 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
     setFormData({ ...formData, ingredients: deleteIngredient });
   };
 
+  const updateIngredientsList = (
+    updatedIngredient: IngredientQuantityPost,
+    index: number
+  ) => {
+    const ingredients = [...formData.ingredients];
+    ingredients[index] = updatedIngredient;
+
+    setFormData((prevState) => ({
+      ...prevState,
+      ingredients: ingredients,
+    }));
+  };
+
+  const renderIngredientForm = () => {
+    return formData.ingredients.map((_ingredients, index) => (
+      <>
+        <IngredientQuantityForm
+          key={`ingredient_${index}`}
+          index={index}
+          updateIngredientForm={updateIngredientsList}
+          ingredients={ingredients}
+          submitClicked={submitClicked}
+        ></IngredientQuantityForm>
+
+        <Button
+          key={`ingredient_deleteButton_${index}`}
+          onClick={() => handleDelete(index)}
+        >
+          Delete
+        </Button>
+      </>
+    ));
+  };
+
   return (
     <div className=" ">
-      <TextField
-        required
-        name="title"
-        label="Title"
-        variant="outlined"
-        value={formData.title}
-        onChange={handleChange}
-        error={formErrors.title}
-        helperText={formErrors.title && "Fill"}
+      <ValidatedTextField
+        submit={submitClicked}
+        label="Titel"
+        validator={requiredValidator}
+        onChange={(newValue) => handleChange("title", newValue)}
       />
-      <TextField
-        name="instructions"
+      <ValidatedTextField
+        submit={submitClicked}
         label="Instruksjoner"
-        multiline
-        fullWidth
-        maxRows={4}
-        value={formData.instructions}
-        onChange={handleChange}
-        error={formErrors.instruction}
-        helperText={formErrors.instruction && "Fill"}
+        validator={requiredValidator}
+        onChange={(newValue) => handleChange("instructions", newValue)}
       />
 
-      {formData.ingredients.map((_singredient, index) => (
-        <>
-          <IngredientQuantityForm
-            key={`ingredient_${index}`}
-            index={index}
-            subRecipeformData={formData}
-            setSubRecipeFormData={setFormData}
-            ingredients={ingredients}
-            submitClicked={submitClicked}
-          ></IngredientQuantityForm>
-
-          <Button
-            key={`ingredient_deleteButton_${index}`}
-            onClick={() => handleDelete(index)}
-          >
-            Delete
-          </Button>
-        </>
-      ))}
+      {renderIngredientForm()}
 
       <Button variant="contained" color="primary" onClick={handleAddIngredient}>
         + ingrediens
