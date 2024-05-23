@@ -38,7 +38,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     cuisine: "",
     type: "",
     portion: 0,
-    subRecipes: [],
+    subRecipes: [{ title: "", instructions: "", ingredients: [] }],
     appUser: user.id,
   });
 
@@ -50,7 +50,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     cuisine: false,
     type: false,
     portion: false,
-    subRecipes: [],
+    subRecipes: [false],
     appUser: true,
   });
 
@@ -64,10 +64,6 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
       ...formValid,
       [name]: isValid,
     });
-    console.log({
-      ...formValid,
-      [name]: isValid,
-    });
   };
 
   const handleSubmit = async (e: any) => {
@@ -77,8 +73,6 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
       .flatMap((value) => (Array.isArray(value) ? value : [value]))
       .every((value) => value === true);
     if (valid) {
-      alert("Oppskrift laget!");
-      console.log(formData.subRecipes);
       const subRecipePromises = formData.subRecipes.map(async (subRecipe) => {
         const result = await postSubRecipe.mutateAsync(subRecipe);
         return result.id;
@@ -97,8 +91,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         subRecipeIds: subRecipeIds,
         appUser: user.id,
       };
-      console.log(createRecipe);
+
       await postRecipe.mutateAsync(createRecipe);
+      alert("Oppskrift laget!");
     } else alert("req!");
   };
 

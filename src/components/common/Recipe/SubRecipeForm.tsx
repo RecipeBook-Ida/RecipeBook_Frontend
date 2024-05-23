@@ -1,11 +1,7 @@
 import { Button } from "@mui/material";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import IngredientQuantityForm from "./IngredientQuantityForm";
-import {
-  Ingredient,
-  IngredientQuantityPost,
-  IngredientQuantityValidPost,
-} from "../../../types/Ingredient";
+import { Ingredient, IngredientQuantityPost } from "../../../types/Ingredient";
 import { SubRecipePost, SubRecipeValidPost } from "../../../types/RecipeType";
 import ValidatedTextField from "../inputField/ValidatedTextField";
 import { requiredValidator } from "../../../utils/textFieldValidators";
@@ -30,13 +26,17 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
   const [formData, setFormData] = useState<SubRecipePost>({
     title: "",
     instructions: "",
-    ingredients: [],
+    ingredients: [{
+      quantity: 0,
+      unit: "",
+      ingredientId: 1,
+    }],
   });
 
   const [formValid, setFormValid] = useState<SubRecipeValidPost>({
     title: false,
     instructions: false,
-    ingredients: [],
+    ingredients: [false],
   });
 
   const handleChange = (name: string, value: any, isValid: boolean) => {
