@@ -42,7 +42,7 @@ export type RecipePostForm = {
 };
 
 export type RecipeValidPost = {
-  [key: string]: boolean | SubRecipeValidPost[];
+  [key: string]: boolean | boolean[];
   title: boolean;
   description: boolean;
   cooktime: boolean;
@@ -50,7 +50,7 @@ export type RecipeValidPost = {
   cuisine: boolean;
   type: boolean;
   portion: boolean;
-  subRecipes: SubRecipeValidPost[];
+  subRecipes: boolean[];
   appUser: boolean;
 };
 
@@ -81,8 +81,8 @@ export type SubRecipePost = {
 };
 
 export type SubRecipeValidPost = {
-  [key: string]: boolean | IngredientQuantityValidPost[];
+  [key: string]: boolean | boolean[];
   title: boolean;
   instructions: boolean;
-  ingredients: IngredientQuantityValidPost[];
+  ingredients: boolean[];
 };

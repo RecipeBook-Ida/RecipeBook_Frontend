@@ -16,7 +16,7 @@ interface IngredientQuantityFormProps {
   updateIngredientForm: (
     index: number,
     updateIngredints: IngredientQuantityPost,
-    updateFormValid: IngredientQuantityValidPost
+    updateFormValid: boolean
   ) => void;
   submitClicked: boolean;
 }
@@ -42,18 +42,21 @@ const IngredientQuantityForm: React.FC<IngredientQuantityFormProps> = ({
   });
 
   const handleChange = (name: string, value: any, isValid: boolean) => {
-    const data = {
+    const updatedFomrData = {
       ...formData,
       [name]: value,
     };
-    setFormData(data);
+    setFormData(updatedFomrData);
 
-    const valid = {
+    const updatedFormValid = {
       ...formValid,
       [name]: isValid,
     };
-    setFormValid(valid);
-    updateIngredientForm(index, data, valid);
+    setFormValid(updatedFormValid);
+    const valid = Object.values(updatedFormValid).every(
+      (value) => value === true
+    );
+    updateIngredientForm(index, updatedFomrData, valid);
   };
 
   const renderTextField = (
@@ -76,7 +79,7 @@ const IngredientQuantityForm: React.FC<IngredientQuantityFormProps> = ({
   return (
     <div className=" flex">
       {renderTextField("Ingrediens", "ingredientId", { options: ingredients })}
-      {renderTextField("Mengde", "quantity", posNumberValidator)}
+      {renderTextField("Mengde", "quantity",{ number: true }, posNumberValidator)}
       {renderTextField("unit", "unit", { options: unit })}
     </div>
   );

@@ -17,7 +17,7 @@ interface SubRecipeFormProps {
   updateSubRecipeForm: (
     index: number,
     updateSubRecipe: SubRecipePost,
-    updateFormValid: SubRecipeValidPost
+    updateFormValid: boolean
   ) => void;
 }
 
@@ -50,7 +50,10 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
     };
     setFormData(updatedFormData);
     setFormValid(updatedFormValid);
-    updateSubRecipeForm(index, updatedFormData, updatedFormValid);
+    const valid = Object.values(updatedFormValid)
+      .flatMap((value) => (Array.isArray(value) ? value : [value]))
+      .every((value) => value === true);
+    updateSubRecipeForm(index, updatedFormData, valid);
   };
 
   const handleAddIngredient = () => {
@@ -76,7 +79,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
   const updateIngredientsList = (
     index: number,
     updatedIngredient: IngredientQuantityPost,
-    updatedFormValid: IngredientQuantityValidPost
+    updatedFormValid: boolean
   ) => {
     const ingredients = [...formData.ingredients];
     ingredients[index] = updatedIngredient;

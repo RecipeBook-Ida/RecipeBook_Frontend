@@ -64,37 +64,23 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
       ...formValid,
       [name]: isValid,
     });
+    console.log({
+      ...formValid,
+      [name]: isValid,
+    });
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setSubmitClicked(true);
-    console.log(formData);
-    console.log(formValid);
-    const valid = Object.values(formValid).every((value) => {
-      // Check if the value is an object (for nested properties)
-      if (Array.isArray(value)) {
-        // For nested arrays, check if all elements are true
-        return value.every((nestedValue) => {
-          // Check if the nested value is an object (for further nesting)
-          if (typeof nestedValue === "object") {
-            // For nested objects, check if all nested properties are true
-            return Object.values(nestedValue).every(
-              (nestedProp) => nestedProp === true
-            );
-          }
-          // For primitive values, just check if it's true
-          return nestedValue === true;
-        });
-      }
-      // For top-level properties, just check if the value is true
-      return value === true;
-    });
-
+    const valid = Object.values(formValid)
+      .flatMap((value) => (Array.isArray(value) ? value : [value]))
+      .every((value) => value === true);
     if (valid) {
       alert("Oppskrift laget!");
-
+      console.log(formData.subRecipes);
       const subRecipePromises = formData.subRecipes.map(async (subRecipe) => {
+        console.log(subRecipe)
         const result = await postSubRecipe.mutateAsync(subRecipe);
         return result.id;
       });
@@ -113,7 +99,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         appUser: user.id,
       };
       console.log(createRecipe);
-      await postRecipe.mutateAsync(createRecipe);
+/*       await postRecipe.mutateAsync(createRecipe); */
     } else alert("req!");
   };
 
@@ -140,7 +126,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
   const updateSubRecipeList = (
     index: number,
     updatedSubRecipe: SubRecipePost,
-    updatedFormValid: SubRecipeValidPost
+    updatedFormValid: boolean
   ) => {
     const subRecipes = [...formData.subRecipes];
     subRecipes[index] = updatedSubRecipe;
