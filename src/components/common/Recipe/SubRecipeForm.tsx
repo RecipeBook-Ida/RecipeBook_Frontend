@@ -97,7 +97,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
 
   const renderIngredientForm = () => {
     return formData.ingredients.map((_ingredients, index) => (
-      <>
+      <div key={`ingredientFrom_${index}`}>
         <IngredientQuantityForm
           key={`ingredient_${index}`}
           index={index}
@@ -112,7 +112,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
         >
           Delete
         </Button>
-      </>
+      </div>
     ));
   };
 

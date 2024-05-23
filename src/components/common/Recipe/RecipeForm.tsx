@@ -114,7 +114,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
       };
       console.log(createRecipe);
       await postRecipe.mutateAsync(createRecipe);
-    }else alert("req!");
+    } else alert("req!");
   };
 
   const handleAddSubRecipe = () => {
@@ -167,6 +167,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
   ) => {
     return (
       <ValidatedTextField
+        key={label}
         {...props}
         submit={submitClicked}
         label={label}
@@ -202,7 +203,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
       {renderTextField("cuisine", "cuisine", { options: cuisine })}
 
       {formData.subRecipes.map((_subRecipe, index) => (
-        <>
+        <div key={`subRecipeFrom_${index}`}>
           <SubRecipeForm
             key={`subRecipe_${index}`}
             index={index}
@@ -216,7 +217,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
           >
             Delete
           </Button>
-        </>
+        </div>
       ))}
 
       <Button variant="contained" color="primary" onClick={handleAddSubRecipe}>
