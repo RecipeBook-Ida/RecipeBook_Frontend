@@ -21,7 +21,7 @@ const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
   options,
 }) => {
   const [value, setValue] = useState(number ? 0 : "");
-  const [option, setOption] = useState("");
+  const [option, setOption] = useState(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
       <>
         <Autocomplete
           id={label}
-          value={option}
+          value={option ? option : null}
           onChange={(_e, option: any) => {
             handleChange(
               option ? (typeof option === "object" ? option.id : option) : ""
