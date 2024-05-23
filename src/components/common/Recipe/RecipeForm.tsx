@@ -80,7 +80,6 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
       alert("Oppskrift laget!");
       console.log(formData.subRecipes);
       const subRecipePromises = formData.subRecipes.map(async (subRecipe) => {
-        console.log(subRecipe)
         const result = await postSubRecipe.mutateAsync(subRecipe);
         return result.id;
       });
@@ -99,7 +98,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         appUser: user.id,
       };
       console.log(createRecipe);
-/*       await postRecipe.mutateAsync(createRecipe); */
+      await postRecipe.mutateAsync(createRecipe);
     } else alert("req!");
   };
 
