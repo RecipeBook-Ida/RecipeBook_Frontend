@@ -1,4 +1,8 @@
-import { IngredientQuantity, IngredientQuantityPost } from "./Ingredient";
+import {
+  IngredientQuantity,
+  IngredientQuantityPost,
+  IngredientQuantityValidPost,
+} from "./Ingredient";
 import { UserList } from "./UserType";
 
 export type Recipe = {
@@ -37,6 +41,19 @@ export type RecipePostForm = {
   appUser: number;
 };
 
+export type RecipeValidPost = {
+  [key: string]: boolean | SubRecipeValidPost[];
+  title: boolean;
+  description: boolean;
+  cooktime: boolean;
+  image: boolean;
+  cuisine: boolean;
+  type: boolean;
+  portion: boolean;
+  subRecipes: SubRecipeValidPost[];
+  appUser: boolean;
+};
+
 export type RecipePost = {
   title: string;
   description: string;
@@ -61,4 +78,11 @@ export type SubRecipePost = {
   title: string;
   instructions: string;
   ingredients: IngredientQuantityPost[];
+};
+
+export type SubRecipeValidPost = {
+  [key: string]: boolean | IngredientQuantityValidPost[];
+  title: boolean;
+  instructions: boolean;
+  ingredients: IngredientQuantityValidPost[];
 };

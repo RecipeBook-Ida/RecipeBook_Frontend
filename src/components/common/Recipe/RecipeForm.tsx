@@ -6,7 +6,9 @@ import { usePostRecipe } from "../../../services/recipe/postRecipe";
 import {
   RecipePost,
   RecipePostForm,
+  RecipeValidPost,
   SubRecipePost,
+  SubRecipeValidPost,
 } from "../../../types/RecipeType";
 import { dummyIngredients } from "../../../types/Ingredient";
 import { usePostSubRecipe } from "../../../services/recipe/postSubRecipe";
@@ -40,17 +42,56 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     appUser: user.id,
   });
 
-  const handleChange = (name: string, value: any) => {
+  const [formValid, setFormValid] = useState<RecipeValidPost>({
+    title: false,
+    description: false,
+    cooktime: false,
+    image: true,
+    cuisine: false,
+    type: false,
+    portion: false,
+    subRecipes: [],
+    appUser: true,
+  });
+
+  const handleChange = (name: string, value: any, isValid: boolean) => {
     setFormData({
       ...formData,
       [name]: value,
     });
-      };
+
+    setFormValid({
+      ...formValid,
+      [name]: isValid,
+    });
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setSubmitClicked(true);
-    if (e.target.checkValidity()) {
+    console.log(formData);
+    console.log(formValid);
+    const valid = Object.values(formValid).every((value) => {
+      // Check if the value is an object (for nested properties)
+      if (Array.isArray(value)) {
+        // For nested arrays, check if all elements are true
+        return value.every((nestedValue) => {
+          // Check if the nested value is an object (for further nesting)
+          if (typeof nestedValue === "object") {
+            // For nested objects, check if all nested properties are true
+            return Object.values(nestedValue).every(
+              (nestedProp) => nestedProp === true
+            );
+          }
+          // For primitive values, just check if it's true
+          return nestedValue === true;
+        });
+      }
+      // For top-level properties, just check if the value is true
+      return value === true;
+    });
+
+    if (valid) {
       alert("Oppskrift laget!");
 
       const subRecipePromises = formData.subRecipes.map(async (subRecipe) => {
@@ -73,7 +114,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
       };
       console.log(createRecipe);
       await postRecipe.mutateAsync(createRecipe);
-    }
+    }else alert("req!");
   };
 
   const handleAddSubRecipe = () => {
@@ -97,8 +138,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
   };
 
   const updateSubRecipeList = (
+    index: number,
     updatedSubRecipe: SubRecipePost,
-    index: number
+    updatedFormValid: SubRecipeValidPost
   ) => {
     const subRecipes = [...formData.subRecipes];
     subRecipes[index] = updatedSubRecipe;
@@ -106,6 +148,14 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     setFormData((prevState) => ({
       ...prevState,
       subRecipes: subRecipes,
+    }));
+
+    const subRecipeValids = [...formValid.subRecipes];
+    subRecipeValids[index] = updatedFormValid;
+
+    setFormValid((prevState) => ({
+      ...prevState,
+      subRecipes: subRecipeValids,
     }));
   };
 
@@ -121,7 +171,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
         submit={submitClicked}
         label={label}
         validator={validator}
-        onChange={(newValue) => handleChange(name, newValue)}
+        onChange={(newValue, isValid) => handleChange(name, newValue, isValid)}
       />
     );
   };

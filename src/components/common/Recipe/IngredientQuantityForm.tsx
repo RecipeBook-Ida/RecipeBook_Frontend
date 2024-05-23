@@ -1,6 +1,9 @@
-import { Autocomplete } from "@mui/material";
 import { useState } from "react";
-import { Ingredient, IngredientQuantityPost } from "../../../types/Ingredient";
+import {
+  Ingredient,
+  IngredientQuantityPost,
+  IngredientQuantityValidPost,
+} from "../../../types/Ingredient";
 import ValidatedTextField from "../inputField/ValidatedTextField";
 import {
   posNumberValidator,
@@ -11,8 +14,9 @@ interface IngredientQuantityFormProps {
   ingredients: Ingredient[];
   index: number;
   updateIngredientForm: (
+    index: number,
     updateIngredints: IngredientQuantityPost,
-    index: number
+    updateFormValid: IngredientQuantityValidPost
   ) => void;
   submitClicked: boolean;
 }
@@ -31,53 +35,49 @@ const IngredientQuantityForm: React.FC<IngredientQuantityFormProps> = ({
     ingredientId: 1,
   });
 
-  const handleChange = (name: string, value: any) => {
-    const form = {
+  const [formValid, setFormValid] = useState<IngredientQuantityValidPost>({
+    quantity: false,
+    unit: false,
+    ingredientId: false,
+  });
+
+  const handleChange = (name: string, value: any, isValid: boolean) => {
+    const data = {
       ...formData,
       [name]: value,
     };
-    setFormData(form);
-    updateIngredientForm(form, index);
+    setFormData(data);
+
+    const valid = {
+      ...formValid,
+      [name]: isValid,
+    };
+    setFormValid(valid);
+    updateIngredientForm(index, data, valid);
+  };
+
+  const renderTextField = (
+    label: string,
+    name: string,
+    props?: any,
+    validator: any = requiredValidator
+  ) => {
+    return (
+      <ValidatedTextField
+        {...props}
+        submit={submitClicked}
+        label={label}
+        validator={validator}
+        onChange={(newValue, isValid) => handleChange(name, newValue, isValid)}
+      />
+    );
   };
 
   return (
     <div className=" flex">
-      <Autocomplete
-        id="ingredientId"
-        renderInput={() => (
-          <ValidatedTextField
-            submit={submitClicked}
-            label="Ingrediens"
-            validator={requiredValidator}
-            onChange={(newValue) => handleChange("ingredientId", newValue)}
-          />
-        )}
-        options={ingredients}
-      ></Autocomplete>
-
-      <ValidatedTextField
-        submit={submitClicked}
-        number
-        label="Mengde"
-        validator={posNumberValidator}
-        onChange={(newValue) => handleChange("quantity", newValue)}
-      />
-
-      <Autocomplete
-        id="unit"
-        /*         onInputChange={(newValue, isValid) =>
-          handleChange("unit", newValue, isValid)
-        } */
-        renderInput={() => (
-          <ValidatedTextField
-            submit={submitClicked}
-            label="Enhet"
-            validator={requiredValidator}
-            onChange={(newValue) => handleChange("unit", newValue)}
-          />
-        )}
-        options={unit}
-      ></Autocomplete>
+      {renderTextField("Ingrediens", "ingredientId", { options: ingredients })}
+      {renderTextField("Mengde", "quantity", posNumberValidator)}
+      {renderTextField("unit", "unit", { options: unit })}
     </div>
   );
 };

@@ -1,8 +1,12 @@
 import { Button } from "@mui/material";
 import { useRef, useState } from "react";
 import IngredientQuantityForm from "./IngredientQuantityForm";
-import { Ingredient, IngredientQuantityPost } from "../../../types/Ingredient";
-import { SubRecipePost } from "../../../types/RecipeType";
+import {
+  Ingredient,
+  IngredientQuantityPost,
+  IngredientQuantityValidPost,
+} from "../../../types/Ingredient";
+import { SubRecipePost, SubRecipeValidPost } from "../../../types/RecipeType";
 import ValidatedTextField from "../inputField/ValidatedTextField";
 import { requiredValidator } from "../../../utils/textFieldValidators";
 
@@ -10,7 +14,11 @@ interface SubRecipeFormProps {
   ingredients: Ingredient[];
   index: number;
   submitClicked: boolean;
-  updateSubRecipeForm: (updateSubRecipe: SubRecipePost, index: number) => void;
+  updateSubRecipeForm: (
+    index: number,
+    updateSubRecipe: SubRecipePost,
+    updateFormValid: SubRecipeValidPost
+  ) => void;
 }
 
 const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
@@ -25,12 +33,24 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
     ingredients: [],
   });
 
-  const handleChange = (name: string, value: any) => {
-    setFormData({
+  const [formValid, setFormValid] = useState<SubRecipeValidPost>({
+    title: false,
+    instructions: false,
+    ingredients: [],
+  });
+
+  const handleChange = (name: string, value: any, isValid: boolean) => {
+    const updatedFormData = {
       ...formData,
       [name]: value,
-    });
-    updateSubRecipeForm(formData, index);
+    };
+    const updatedFormValid = {
+      ...formValid,
+      [name]: isValid,
+    };
+    setFormData(updatedFormData);
+    setFormValid(updatedFormValid);
+    updateSubRecipeForm(index, updatedFormData, updatedFormValid);
   };
 
   const handleAddIngredient = () => {
@@ -54,8 +74,9 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
   };
 
   const updateIngredientsList = (
+    index: number,
     updatedIngredient: IngredientQuantityPost,
-    index: number
+    updatedFormValid: IngredientQuantityValidPost
   ) => {
     const ingredients = [...formData.ingredients];
     ingredients[index] = updatedIngredient;
@@ -63,6 +84,14 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
     setFormData((prevState) => ({
       ...prevState,
       ingredients: ingredients,
+    }));
+
+    const ingredientsValid = [...formValid.ingredients];
+    ingredientsValid[index] = updatedFormValid;
+
+    setFormValid((prevState) => ({
+      ...prevState,
+      ingredients: ingredientsValid,
     }));
   };
 
@@ -87,20 +116,27 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
     ));
   };
 
+  const renderTextField = (
+    label: string,
+    name: string,
+    props?: any,
+    validator: any = requiredValidator
+  ) => {
+    return (
+      <ValidatedTextField
+        {...props}
+        submit={submitClicked}
+        label={label}
+        validator={validator}
+        onChange={(newValue, isValid) => handleChange(name, newValue, isValid)}
+      />
+    );
+  };
+
   return (
     <div className=" ">
-      <ValidatedTextField
-        submit={submitClicked}
-        label="Titel"
-        validator={requiredValidator}
-        onChange={(newValue) => handleChange("title", newValue)}
-      />
-      <ValidatedTextField
-        submit={submitClicked}
-        label="Instruksjoner"
-        validator={requiredValidator}
-        onChange={(newValue) => handleChange("instructions", newValue)}
-      />
+      {renderTextField("Tittel", "title")}
+      {renderTextField("Instruksjoner", "instructions")}
 
       {renderIngredientForm()}
 

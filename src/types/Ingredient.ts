@@ -19,6 +19,13 @@ export type IngredientQuantityPost = {
   ingredientId: number;
 };
 
+export type IngredientQuantityValidPost = {
+  [key: string]: boolean;
+  quantity: boolean;
+  unit: boolean;
+  ingredientId: boolean;
+};
+
 export const dummyIngredients = [
   {
     id: 1,
