@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { User, dummyUser } from "../../../types/UserType";
 import { useState } from "react";
 import SubRecipeForm from "./SubRecipeForm";
@@ -8,15 +8,11 @@ import {
   RecipePostForm,
   RecipeValidPost,
   SubRecipePost,
-  SubRecipeValidPost,
 } from "../../../types/RecipeType";
 import { dummyIngredients } from "../../../types/Ingredient";
 import { usePostSubRecipe } from "../../../services/recipe/postSubRecipe";
 import ValidatedTextField from "../inputField/ValidatedTextField";
-import {
-  posNumberValidator,
-  requiredValidator,
-} from "../../../utils/textFieldValidators";
+import { posNumberValidator } from "../../../utils/textFieldValidators";
 
 interface RecipeFormProps {}
 
@@ -94,7 +90,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
 
       await postRecipe.mutateAsync(createRecipe);
       alert("Oppskrift laget!");
-    } else alert("req!");
+    }
   };
 
   const handleAddSubRecipe = () => {
@@ -143,12 +139,13 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     label: string,
     name: string,
     props?: any,
-    validator: any = requiredValidator
+    validator?: any
   ) => {
     return (
       <ValidatedTextField
         key={label}
         {...props}
+        required
         submit={submitClicked}
         label={label}
         validator={validator}
@@ -157,58 +154,78 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     );
   };
 
+  const renderSubRecipeForm = () => {
+    return formData.subRecipes.map((subRecipe, index) => (
+      <div key={`subRecipeFrom_${index}`}>
+        <div className="flex">
+          <h4>Deloppskrift {subRecipe.title || index + 1}</h4>
+          {index > 0 && (
+            <Button
+              key={`subRecipe_deleteButton_${index}`}
+              onClick={() => handleDelete(index)}
+            >
+              Fjern
+            </Button>
+          )}
+        </div>
+        <SubRecipeForm
+          key={`subRecipe_${index}`}
+          index={index}
+          updateSubRecipeForm={updateSubRecipeList}
+          ingredients={ingredients}
+          submitClicked={submitClicked}
+        ></SubRecipeForm>
+      </div>
+    ));
+  };
+
   return (
     <Box
       component="form"
-      sx={{
-        "& .MuiTextField-root": { m: 1, width: "25ch" },
-      }}
       noValidate
       autoComplete="off"
       onSubmit={handleSubmit}
+      className=" max-w-full gap-6 flex flex-col break-all"
     >
-      {renderTextField("Tittel", "title")}
-      {renderTextField("Beskrivelse", "description", {
-        multiline: true,
-        fullWidth: true,
-      })}
-      {renderTextField("Tid", "cooktime", { number: true }, posNumberValidator)}
-      {renderTextField(
-        "Porsjon",
-        "portion",
-        { number: true },
-        posNumberValidator
-      )}
-      {renderTextField("type", "type", { options: type })}
-      {renderTextField("cuisine", "cuisine", { options: cuisine })}
+      <h2>Lag ny oppskrift</h2>
+      <div className=" flex gap-6">
+        {renderTextField("Tittel", "title")}
+        {renderTextField("Beskrivelse", "description", {
+          multiline: true,
+          maxRows: 4,
+          fullWidth: true,
+        })}
+      </div>
 
-      {formData.subRecipes.map((_subRecipe, index) => (
-        <div key={`subRecipeFrom_${index}`}>
-          <SubRecipeForm
-            key={`subRecipe_${index}`}
-            index={index}
-            updateSubRecipeForm={updateSubRecipeList}
-            ingredients={ingredients}
-            submitClicked={submitClicked}
-          ></SubRecipeForm>
-          <Button
-            key={`subRecipe_deleteButton_${index}`}
-            onClick={() => handleDelete(index)}
-          >
-            Delete
-          </Button>
+      <div className="grid grid-cols-3 gap-6">
+        <div className="flex gap-6">
+          {renderTextField(
+            "Tilberedelsestid",
+            "cooktime",
+            { number: true },
+            posNumberValidator
+          )}
+          {renderTextField(
+            "Antall porsjoner",
+            "portion",
+            { number: true },
+            posNumberValidator
+          )}
         </div>
-      ))}
 
+        {renderTextField("Type måltid", "type", { options: type })}
+        {renderTextField("Rett", "cuisine", { options: cuisine })}
+      </div>
+
+      <h4>Legg til del-opskrifter</h4>
+      {renderSubRecipeForm()}
       <Button variant="contained" color="primary" onClick={handleAddSubRecipe}>
-        + subrecipe
+        + deloppskrift
       </Button>
 
       <Button variant="contained" color="primary" type="submit">
         Submit
       </Button>
-
-      <p>{JSON.stringify(formData)}</p>
     </Box>
   );
 };

@@ -26,11 +26,13 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
   const [formData, setFormData] = useState<SubRecipePost>({
     title: "",
     instructions: "",
-    ingredients: [{
-      quantity: 0,
-      unit: "",
-      ingredientId: 1,
-    }],
+    ingredients: [
+      {
+        quantity: 0,
+        unit: "",
+        ingredientId: 1,
+      },
+    ],
   });
 
   const [formValid, setFormValid] = useState<SubRecipeValidPost>({
@@ -100,7 +102,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
 
   const renderIngredientForm = () => {
     return formData.ingredients.map((_ingredients, index) => (
-      <div key={`ingredientFrom_${index}`}>
+      <div className="flex gap-6 pb-6" key={`ingredientFrom_${index}`}>
         <IngredientQuantityForm
           key={`ingredient_${index}`}
           index={index}
@@ -109,12 +111,14 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
           submitClicked={submitClicked}
         ></IngredientQuantityForm>
 
-        <Button
-          key={`ingredient_deleteButton_${index}`}
-          onClick={() => handleDelete(index)}
-        >
-          Delete
-        </Button>
+        {index > 0 && (
+          <Button
+            key={`ingredient_deleteButton_${index}`}
+            onClick={() => handleDelete(index)}
+          >
+            Fjern
+          </Button>
+        )}
       </div>
     ));
   };
@@ -123,29 +127,43 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
     label: string,
     name: string,
     props?: any,
-    validator: any = requiredValidator
+    validator?: any
   ) => {
     return (
       <ValidatedTextField
-        {...props}
+        required
         submit={submitClicked}
         label={label}
         validator={validator}
         onChange={(newValue, isValid) => handleChange(name, newValue, isValid)}
+        {...props}
       />
     );
   };
 
   return (
-    <div className=" ">
-      {renderTextField("Tittel", "title")}
-      {renderTextField("Instruksjoner", "instructions")}
-
+    <div>
+      <div className=" flex gap-6">
+        {renderTextField("Deltittel", "title", { required: false })}
+        {renderTextField("Instruksjoner", "instructions", {
+          multiline: true,
+          fullWidth: true,
+          maxRows: 6,
+          helperText: "Begynn på ny linje for nytt steg",
+        })}
+      </div>
+      <div className="flex justify-center gap-6">
+        <h4>Legg til tilhørende ingredienser</h4>
+        <Button
+          className=""
+          variant="contained"
+          color="primary"
+          onClick={handleAddIngredient}
+        >
+          + ingrediens
+        </Button>
+      </div>
       {renderIngredientForm()}
-
-      <Button variant="contained" color="primary" onClick={handleAddIngredient}>
-        + ingrediens
-      </Button>
     </div>
   );
 };

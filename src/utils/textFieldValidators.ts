@@ -20,3 +20,7 @@ export const requiredValidator = (value: string | number) => {
   if (value) return false;
   return "Required!";
 };
+
+export const noneValidator = (value: string | number) => {
+  return false;
+};

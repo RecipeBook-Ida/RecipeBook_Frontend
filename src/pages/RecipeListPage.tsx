@@ -4,11 +4,14 @@ import { Recipe } from "../types/RecipeType";
 import RecipeCardGroup from "../components/common/Recipe/RecipeCardGroup";
 import Breadcrumb from "../components/common/Breadcrumb";
 import RecipeForm from "../components/common/Recipe/RecipeForm";
+import { Box } from "@mui/material";
+import Modal from "../components/common/modal/Modal";
+import ModalContent from "../components/common/modal/ModalContent";
 
 function RecipeListPage() {
   const recipeHook = useGetAllRecipes();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [add, setAdd] = useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (!recipeHook.isLoading && recipeHook.data) {
@@ -21,9 +24,13 @@ function RecipeListPage() {
       <Breadcrumb />
       <RecipeCardGroup recipes={recipes} size="large" />
 
-      <button onClick={() => setAdd(!add)}>ny oppskrift</button>
+      <button onClick={() => setModalOpen(!modalOpen)}>ny oppskrift</button>
 
-      {add && <RecipeForm></RecipeForm>}
+      <Modal
+        isOpen={modalOpen}
+        closeModal={() => setModalOpen(!modalOpen)}
+        modalContent={"RecipeAdd"}
+      ></Modal>
     </div>
   );
 }

@@ -68,6 +68,7 @@ const IngredientQuantityForm: React.FC<IngredientQuantityFormProps> = ({
     return (
       <ValidatedTextField
         {...props}
+        required
         submit={submitClicked}
         label={label}
         validator={validator}
@@ -77,10 +78,10 @@ const IngredientQuantityForm: React.FC<IngredientQuantityFormProps> = ({
   };
 
   return (
-    <div className=" flex">
+    <div className="grid grid-cols-3 gap-4">
       {renderTextField("Ingrediens", "ingredientId", { options: ingredients })}
       {renderTextField("Mengde", "quantity",{ number: true }, posNumberValidator)}
-      {renderTextField("unit", "unit", { options: unit })}
+      {renderTextField("Enhet", "unit", { options: unit })}
     </div>
   );
 };
