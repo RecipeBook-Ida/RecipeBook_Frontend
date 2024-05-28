@@ -6,7 +6,6 @@ import {
 } from "../../../utils/textFieldValidators";
 
 type ValidatedTextFieldProps = TextFieldProps & {
-  label: string;
   validator?: any;
   onChange: (newValue: any, isValid: boolean) => void;
   number?: true;
@@ -15,7 +14,6 @@ type ValidatedTextFieldProps = TextFieldProps & {
 };
 
 const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
-  label,
   onChange,
   number,
   submit,
@@ -49,7 +47,6 @@ const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
     return (
       <>
         <Autocomplete
-          id={label}
           value={option ? option : null}
           onChange={(_e, option: any) => {
             handleChange(
@@ -61,7 +58,6 @@ const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
             <TextField
               {...props}
               {...params}
-              label={label}
               error={!!error}
               helperText={error}
               required={required}
@@ -78,7 +74,6 @@ const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
 
   return (
     <TextField
-      label={label}
       value={value}
       onChange={(e) => handleChange(e.target.value)}
       error={!!error}
