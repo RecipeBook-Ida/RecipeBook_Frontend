@@ -40,7 +40,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
 
   const [formValid, setFormValid] = useState<RecipeValidPost>({
     title: false,
-    description: false,
+    description: true,
     cooktime: false,
     image: true,
     cuisine: false,
@@ -144,12 +144,12 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
     return (
       <ValidatedTextField
         key={label}
-        {...props}
         required
         submit={submitClicked}
         label={label}
         validator={validator}
         onChange={(newValue, isValid) => handleChange(name, newValue, isValid)}
+        {...props}
       />
     );
   };
@@ -194,6 +194,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
           multiline: true,
           maxRows: 4,
           fullWidth: true,
+          required: false,
         })}
       </div>
 

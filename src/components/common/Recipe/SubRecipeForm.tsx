@@ -4,7 +4,6 @@ import IngredientQuantityForm from "./IngredientQuantityForm";
 import { Ingredient, IngredientQuantityPost } from "../../../types/Ingredient";
 import { SubRecipePost, SubRecipeValidPost } from "../../../types/RecipeType";
 import ValidatedTextField from "../inputField/ValidatedTextField";
-import { requiredValidator } from "../../../utils/textFieldValidators";
 
 interface SubRecipeFormProps {
   ingredients: Ingredient[];
@@ -36,7 +35,7 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
   });
 
   const [formValid, setFormValid] = useState<SubRecipeValidPost>({
-    title: false,
+    title: true,
     instructions: false,
     ingredients: [false],
   });
