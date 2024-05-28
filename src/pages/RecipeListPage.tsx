@@ -28,8 +28,9 @@ function RecipeListPage() {
 
       <Modal
         isOpen={modalOpen}
-        closeModal={() => setModalOpen(!modalOpen)}
+        closeModal={() => setModalOpen(false)}
         modalContent={"RecipeAdd"}
+        onSave={() => setModalOpen(false)}
       ></Modal>
     </div>
   );

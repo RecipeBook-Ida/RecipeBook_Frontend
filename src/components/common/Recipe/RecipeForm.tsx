@@ -14,9 +14,11 @@ import { usePostSubRecipe } from "../../../services/recipe/postSubRecipe";
 import ValidatedTextField from "../inputField/ValidatedTextField";
 import { posNumberValidator } from "../../../utils/textFieldValidators";
 
-interface RecipeFormProps {}
+interface RecipeFormProps {
+  onSave?: () => void;
+}
 
-const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
+const RecipeForm: React.FC<RecipeFormProps> = ({ onSave }) => {
   const [submitClicked, setSubmitClicked] = useState(false);
   const postSubRecipe = usePostSubRecipe();
   const ingredients = dummyIngredients;
@@ -89,6 +91,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({}) => {
       };
 
       await postRecipe.mutateAsync(createRecipe);
+      onSave?.();
       alert("Oppskrift laget!");
     }
   };
