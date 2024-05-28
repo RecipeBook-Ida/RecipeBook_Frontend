@@ -1,24 +1,29 @@
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, TextField, TextFieldProps } from "@mui/material";
 import { useEffect, useState } from "react";
+import {
+  noneValidator,
+  requiredValidator,
+} from "../../../utils/textFieldValidators";
 
-interface ValidatedTextFieldProps {
+type ValidatedTextFieldProps = TextFieldProps & {
   label: string;
-  validator: any;
+  validator?: any;
   onChange: (newValue: any, isValid: boolean) => void;
   number?: true;
-  props?: any;
   submit?: boolean;
   options?: any[];
-}
+};
 
 const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
   label,
-  validator,
   onChange,
   number,
-  props,
   submit,
   options,
+  required,
+  validator = required ? requiredValidator : noneValidator,
+  helperText,
+  ...props
 }) => {
   const [value, setValue] = useState(number ? 0 : "");
   const [option, setOption] = useState(null);
@@ -59,7 +64,7 @@ const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
               label={label}
               error={!!error}
               helperText={error}
-              required
+              required={required}
             />
           )}
           getOptionLabel={(option: any) =>
@@ -73,15 +78,15 @@ const ValidatedTextField: React.FC<ValidatedTextFieldProps> = ({
 
   return (
     <TextField
-      {...props}
       label={label}
       value={value}
       onChange={(e) => handleChange(e.target.value)}
       error={!!error}
-      helperText={error}
+      helperText={error || helperText}
       variant="outlined"
-      required
+      required={required}
       type={number && "number"}
+      {...props}
     />
   );
 };
