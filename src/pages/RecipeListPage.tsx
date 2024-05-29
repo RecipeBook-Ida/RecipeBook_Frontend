@@ -3,10 +3,12 @@ import { useGetAllRecipes } from "../services/recipe/getRecipe";
 import { Recipe } from "../types/RecipeType";
 import RecipeCardGroup from "../components/common/Recipe/RecipeCardGroup";
 import Breadcrumb from "../components/common/Breadcrumb";
+import Modal from "../components/common/modal/Modal";
 
 function RecipeListPage() {
   const recipeHook = useGetAllRecipes();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (!recipeHook.isLoading && recipeHook.data) {
@@ -17,7 +19,16 @@ function RecipeListPage() {
   return (
     <div className="h-full overflow-y-auto pb-28 px-6">
       <Breadcrumb />
-      <RecipeCardGroup recipes={recipes} size="large"/>
+      <RecipeCardGroup recipes={recipes} size="large" />
+
+      <button onClick={() => setModalOpen(!modalOpen)}>ny oppskrift</button>
+
+      <Modal
+        isOpen={modalOpen}
+        closeModal={() => setModalOpen(false)}
+        modalContent={"RecipeAdd"}
+        onSave={() => setModalOpen(false)}
+      ></Modal>
     </div>
   );
 }
