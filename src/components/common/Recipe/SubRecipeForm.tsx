@@ -110,14 +110,13 @@ const SubRecipeForm: React.FC<SubRecipeFormProps> = ({
           submitClicked={submitClicked}
         ></IngredientQuantityForm>
 
-        {index > 0 && (
-          <Button
-            key={`ingredient_deleteButton_${index}`}
-            onClick={() => handleDelete(index)}
-          >
-            Fjern
-          </Button>
-        )}
+        <Button
+          key={`ingredient_deleteButton_${index}`}
+          onClick={() => handleDelete(index)}
+          disabled={formData.ingredients.length==1}
+        >
+          Fjern
+        </Button>
       </div>
     ));
   };

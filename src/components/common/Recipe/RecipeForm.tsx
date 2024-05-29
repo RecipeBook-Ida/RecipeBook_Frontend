@@ -162,14 +162,14 @@ const RecipeForm: React.FC<RecipeFormProps> = ({ onSave }) => {
       <div key={`subRecipeFrom_${index}`}>
         <div className="flex">
           <h4>Deloppskrift {subRecipe.title || index + 1}</h4>
-          {index > 0 && (
-            <Button
-              key={`subRecipe_deleteButton_${index}`}
-              onClick={() => handleDelete(index)}
-            >
-              Fjern
-            </Button>
-          )}
+
+          <Button
+            key={`subRecipe_deleteButton_${index}`}
+            onClick={() => handleDelete(index)}
+            disabled={formData.subRecipes.length == 1}
+          >
+            Fjern
+          </Button>
         </div>
         <SubRecipeForm
           key={`subRecipe_${index}`}
